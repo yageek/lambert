@@ -25,20 +25,23 @@ static double lon_ntf = 0;
 
 double lat_from_lat_iso(double lat_iso, double e,double eps)
 {
-	
+
 	double phi_0 =  2*atan(exp(lat_iso)) - M_PI_2;
 	double phi_i = 2*atan(pow((1+e*sin(phi_0))/(1-e*sin(phi_0)),e/2.0)*exp(lat_iso)) - M_PI_2;
-	
-	while(abs(phi_i - phi_0) > eps)
+
+	while(abs(phi_i - phi_0) >= eps)
 	{	
 		phi_0 = phi_i;
 		phi_i = 2*atan(pow((1+e*sin(phi_0))/(1-e*sin(phi_0)),e/2.0)*exp(lat_iso)) - M_PI_2;
+		printf("Phi before: %.10f - Phi after: %10.f\n", phi_0,phi_i);
 	}
 
-	
+
 	return phi_i;
 
 }
+
+
 
 /*
  * ALGO0021 - Calcul de la grande Normale 
