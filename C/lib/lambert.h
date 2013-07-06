@@ -22,3 +22,9 @@ void lambert_to_wgs84(const Point * org, Point *dest, LambertZone zone);
 
 double lat_from_lat_iso(double lat_iso, double e, double eps);
 
+/*
+* ALGO0012
+*/
+
+Point cartesian_to_geographic(Point org, double a, double e , double eps);
+
