@@ -28,14 +28,12 @@ double lat_from_lat_iso(double lat_iso, double e,double eps)
 
 	double phi_0 =  2*atan(exp(lat_iso)) - M_PI_2;
 	double phi_i = 2*atan(pow((1+e*sin(phi_0))/(1-e*sin(phi_0)),e/2.0)*exp(lat_iso)) - M_PI_2;
-
-	while(abs(phi_i - phi_0) >= eps)
+	double delta ; 
+	while(delta = fabs(phi_i - phi_0),delta > eps)
 	{	
 		phi_0 = phi_i;
 		phi_i = 2*atan(pow((1+e*sin(phi_0))/(1-e*sin(phi_0)),e/2.0)*exp(lat_iso)) - M_PI_2;
-		printf("Phi before: %.10f - Phi after: %10.f\n", phi_0,phi_i);
 	}
-
 
 	return phi_i;
 
@@ -83,13 +81,13 @@ double lambert_normal(lat,a,e)
  {
  	double x = org.x, y = org.y, z = org.z;
 
- 	double lon = atan(y/z);
+ 	double lon = atan(y/x);
  	double module = sqrt(x*x + y*y);
 
  	double phi_0 = atan(z/(module*(1-(a*e*e)/(sqrt(x*x+y*y+z*z)))));
  	double phi_i = atan(z/module/(1-a*e*e*cos(phi_0)/(module + sqrt(1-e*e*sin(phi_0)*sin(phi_0)))));
-
- 	while(abs(phi_i-phi_0) > eps)
+ 	double delta;
+ 	while(delta = fabs(phi_i - phi_0),delta >= eps)
  	{
  		phi_0 = phi_i;
  		phi_i = atan(z/module/(1-a*e*e*cos(phi_0)/(module + sqrt(1-e*e*sin(phi_0)*sin(phi_0)))));
@@ -130,7 +128,7 @@ void lambert_to_wgs84(const Point * org, Point *dest,LambertZone zone){
 
 	lon = lon_ntf + gamma/n;
 
-	lat_iso = -1/n*log(abs(R/C));
+	lat_iso = -1/n*log(fabs(R/C));
 
 	double lat = lat_from_lat_iso(lat_iso,E_CLARK_IGN,DEFAULT_EPS);
 

@@ -2,12 +2,29 @@
 #include <CUnit/Console.h>
 #include <CUnit/Automated.h>
 #include <math.h>
+#include <stdlib.h>
 #include "../lib/lambert.h"
 
 int init_suite_success(void) { return 0; }
 int init_suite_failure(void) { return -1; }
 int clean_suite_success(void) { return 0; }
 int clean_suite_failure(void) { return -1; }
+
+char buffer[20];
+char format[20];
+
+double truncate(double val, int n)
+{
+	sprintf(format,"%%.%df",n);
+	sprintf(buffer,format,val);
+	return atof(buffer);
+
+}
+
+double rounded_down(double val,int n){
+	double p = pow(10,n);
+	return floorf(val*p)/p;
+}
 
 void test_lambert(void)
 {
@@ -36,15 +53,13 @@ void test_algo0002(void)
 
 	double phi[3] = {0.87266462600, -0.29999999997 ,0.19998903369};
 
-	double ign_eps = 1e-10;
 	unsigned int index;
 
 		for(index = 0;index < 3;index++)
 		{
 			double result = lat_from_lat_iso(lat_iso[index], e[index], eps[index]);
-			double diff = abs(result - phi[index]);
-			// ck_assert_msg(diff <= ign_eps,"Expected: %.15f - Compute: %.15f - Diff:%.15f",phi[index], result,diff);
-			CU_ASSERT(diff <= ign_eps);
+			result = truncate(result,11);
+			CU_ASSERT(result == phi[index]);
 		}
 }
 
@@ -64,16 +79,16 @@ void test_algo0012(void)
 	double he[3] = {99.9995, 10.0001, 2000.0001};
 
 	unsigned int i;
-	double ign_eps = 1e-10;
+	 double ign_eps = 1e-10;
 	for(i=0; i < 3;++i)
 	{
 		Point sample = {x[i],y[i],z[i]};
 		Point val ;
 		val = cartesian_to_geographic(sample,a[i],e[i],eps[i]);
-		// ck_assert_msg(abs(val.x - lon[i]) < ign_eps,"Lon Error - Expected:%.10f - Computed:%.10f",val.x,lon[i]);
-		// ck_assert_msg(abs(val.y - lat[i]) < ign_eps,"Lat Error - Expected:%.10f - Computed:%.10f",val.y,lat[i]);
-		// ck_assert_msg(abs(val.z - he[i]) < ign_eps,"He Error - Expected:%.10f - Computed:%.10f",val.z,he[i]);
-		CU_ASSERT(abs(val.x - lon[i]) < ign_eps);	
+		
+		CU_ASSERT(fabs(val.x - lon[i]) < ign_eps);
+		CU_ASSERT(fabs(val.y - lat[i]) < ign_eps);
+		CU_ASSERT(fabs(val.z - he[i]) < ign_eps ) ;
 	}
 
 
@@ -96,9 +111,8 @@ int main(int argc, char **argv){
    }
 
    /* add the tests to the suite */
-   if (NULL == CU_add_test(pSuite, "successful_test_1", test_algo0002))
-       // (NULL == CU_add_test(pSuite, "successful_test_2", test_success2)) ||
-       // (NULL == CU_add_test(pSuite, "successful_test_3", test_success3)))
+   if ( NULL == CU_add_test(pSuite, "Test Algo0002", test_algo0002) ||
+        NULL == CU_add_test(pSuite, "Test Algo0012", test_algo0012) ) 
    {
       CU_cleanup_registry();
       return CU_get_error();
