@@ -31,9 +31,9 @@ double rounded_down(double val,int n){
 void test_lambert(void)
 {
 
-	Point org = {994272.661,113467.422,0};
+	Point org = {999534.581,112186.569,0};
 	Point dest = {0,0,0};
-	LambertZone zone = LAMBERT_II_E;
+	LambertZone zone = LAMBERT_I;
 
 	lambert_to_wgs84(&org, &dest, zone);
 	// ck_assert_msg(dest.x == 0.145512099,"Failed: Expect 0.145512099 E- Found:%d",dest.x);
@@ -116,7 +116,7 @@ void test_algo0012(void)
 	{
 		Point sample = {x[i],y[i],z[i]};
 		Point val ;
-		val = cartesian_to_geographic(sample,a[i],e[i],eps[i]);
+		val = cartesian_to_geographic(sample,LON_MERID_PARIS,a[i],e[i],eps[i]);
 		
 		// printf("X Computed:%.11f - Expected:%.11f\n",val.x,lon[i]);
 		CU_ASSERT(fabs(val.x - lon[i]) <= ign_eps);

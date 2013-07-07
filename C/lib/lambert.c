@@ -106,11 +106,11 @@ double lambert_normal(double lat, double a, double e)
  * ALGO0012 - Passage des coordonnées cartésiennes aux coordonnées géographiques
  */
 
- Point cartesian_to_geographic(Point org, double a, double e , double eps)
+ Point cartesian_to_geographic(Point org, double meridien, double a, double e , double eps)
  {
  	double x = org.x, y = org.y, z = org.z;
 
- 	double lon = atan(y/x);
+ 	double lon = meridien + atan(y/x);
 
  	double module = sqrt(x*x + y*y);
 
@@ -156,7 +156,8 @@ void lambert_to_wgs84(const Point * org, Point *dest,LambertZone zone){
 	 
 	 DISPLAY_POINT(temp);
 
-	 temp = cartesian_to_geographic(temp,A_WGS84,E_WGS84,DEFAULT_EPS);
+	 //WGS84 refers to greenwich
+	 temp = cartesian_to_geographic(temp, LON_MERID_GREENWICH, A_WGS84,E_WGS84,DEFAULT_EPS);
 
 	 DISPLAY_POINT(temp);
 

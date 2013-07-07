@@ -44,7 +44,7 @@ double lat_from_lat_iso(double lat_iso, double e, double eps);
 * ALGO0012
 */
 
-Point cartesian_to_geographic(Point org, double a, double e , double eps);
+Point cartesian_to_geographic(Point org, double meridien, double a, double e , double eps);
 
 /*
  * ALGO004
