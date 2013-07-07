@@ -79,16 +79,19 @@ void test_algo0012(void)
 	double he[3] = {99.9995, 10.0001, 2000.0001};
 
 	unsigned int i;
-	 double ign_eps = 1e-10;
+	 double ign_eps = 1e-11;
 	for(i=0; i < 3;++i)
 	{
 		Point sample = {x[i],y[i],z[i]};
 		Point val ;
 		val = cartesian_to_geographic(sample,a[i],e[i],eps[i]);
 		
-		CU_ASSERT(fabs(val.x - lon[i]) < ign_eps);
-		CU_ASSERT(fabs(val.y - lat[i]) < ign_eps);
-		CU_ASSERT(fabs(val.z - he[i]) < ign_eps ) ;
+		printf("X Computed:%.11f - Expected:%.11f\n",val.x,lon[i]);
+		CU_ASSERT(fabs(val.x - lon[i]) <= ign_eps);
+		printf("Y Computed:%.11f - Expected:%.11f\n",val.y,lat[i]);
+		CU_ASSERT(fabs(val.y - lat[i]) <= ign_eps);
+		printf("Z Computed:%.11f - Expected:%.11f\n",val.z,he[i]);
+		CU_ASSERT(truncate(val.z,4) == he[i] ) ;
 	}
 
 

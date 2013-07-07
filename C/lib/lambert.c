@@ -82,19 +82,20 @@ double lambert_normal(lat,a,e)
  	double x = org.x, y = org.y, z = org.z;
 
  	double lon = atan(y/x);
+
  	double module = sqrt(x*x + y*y);
 
- 	double phi_0 = atan(z/(module*(1-(a*e*e)/(sqrt(x*x+y*y+z*z)))));
- 	double phi_i = atan(z/module/(1-a*e*e*cos(phi_0)/(module + sqrt(1-e*e*sin(phi_0)*sin(phi_0)))));
+ 	double phi_0 = atan(z/(module*(1-(a*e*e)/sqrt(x*x+y*y+z*z))));
+ 	double phi_i = atan(z/module/(1-a*e*e*cos(phi_0)/(module * sqrt(1-e*e*sin(phi_0)*sin(phi_0)))));
  	double delta;
- 	while(delta = fabs(phi_i - phi_0),delta >= eps)
+ 	while(delta = fabs(phi_i - phi_0),delta > eps)
  	{
  		phi_0 = phi_i;
- 		phi_i = atan(z/module/(1-a*e*e*cos(phi_0)/(module + sqrt(1-e*e*sin(phi_0)*sin(phi_0)))));
+ 		phi_i = atan(z/module/(1-a*e*e*cos(phi_0)/(module * sqrt(1-e*e*sin(phi_0)*sin(phi_0)))));
 
  	}
  	
- 	double he = module/cos(phi_i) - a/(1-e*e*sin(phi_i)*sin(phi_i));
+ 	double he = module/cos(phi_i) - a/sqrt(1-e*e*sin(phi_i)*sin(phi_i));
  	
  	Point pt;
  	pt.x = lon;
