@@ -17,7 +17,7 @@ typedef enum {
 	LAMBERT_III=2,
 	LAMBERT_IV=3,
 	LAMBERT_II_E=4,
-	LAMBER_93= 5
+	LAMBERT_93= 5
 } LambertZone;
 
 

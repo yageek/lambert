@@ -96,7 +96,7 @@ double lambert_normal(double lat, double a, double e)
 
  	pt.y = (N+he)*cos(lat)*sin(lon);
 
- 	pt.z = (1*(1-e*e)+he)*sin(lat);
+ 	pt.z = (N*(1-e*e)+he)*sin(lat);
 
  	return pt;
 
@@ -150,9 +150,9 @@ void lambert_to_wgs84(const Point * org, Point *dest,LambertZone zone){
 
 	 Point temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
 
-	 temp.x-=168;
-	 temp.y=-60;
-	 temp.z+=320;
+	 temp.x= temp.x - 168;
+	 temp.y= temp.y - 60;
+	 temp.z= temp.z + 320;
 	 
 	 DISPLAY_POINT(temp);
 
@@ -163,6 +163,6 @@ void lambert_to_wgs84(const Point * org, Point *dest,LambertZone zone){
 	 dest->x = temp.x;
 	 dest->y = temp.y;
 
-	 printf("(RAD)Lon:%f - Lat:%f | (DEG)Lon:%f - Lat:%f\n",dest->x,dest->y,RAD_TO_DEG(dest->x),RAD_TO_DEG(dest->y));
+	 printf("(RAD)Lon:%.11ff - Lat:%.11f | (DEG)Lon:%.11f - Lat:%.11f\n",dest->x,dest->y,RAD_TO_DEG(dest->x),RAD_TO_DEG(dest->y));
 
 }

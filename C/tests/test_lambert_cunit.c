@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include "../lib/lambert.h"
 
+#define DISPLAY_POINT(point) printf(#point" X:%f | Y:%f | Z:%f\n",point.x,point.y,point.z);
+
 int init_suite_success(void) { return 0; }
 int init_suite_failure(void) { return -1; }
 int clean_suite_success(void) { return 0; }
@@ -29,9 +31,9 @@ double rounded_down(double val,int n){
 void test_lambert(void)
 {
 
-	Point org = {994272.661,113467.422};
-	Point dest = {0,0};
-	LambertZone zone = LAMBERT_I;
+	Point org = {994272.661,113467.422,0};
+	Point dest = {0,0,0};
+	LambertZone zone = LAMBERT_II_E;
 
 	lambert_to_wgs84(&org, &dest, zone);
 	// ck_assert_msg(dest.x == 0.145512099,"Failed: Expect 0.145512099 E- Found:%d",dest.x);
@@ -39,19 +41,37 @@ void test_lambert(void)
 
 }
 
-void test_algo0021(void)
-{
-
-
-
-}
-
 void test_algo009(void)
-{
+{	
+	double lon[3] = {0.01745329248 ,0.00290888212 ,0.00581776423};
+	double lat[3] = {0.02036217457,0.00000000000 ,-0.03199770300};
+	double he[3] = {100.0000,10.0000 ,2000.0000};
+	double a[3] = {6378249.2000 ,6378249.2000 ,6378249.2000};
+	double e[3] = {0.08248325679 ,0.08248325679 ,0.08248325679};
 
+
+	unsigned int i;
+	for (i =0; i < 3;++i)
+	{
+		Point pt  = geographic_to_cartesian(lon[i],lat[i],he[i],a[i],e[i]);
+		DISPLAY_POINT(pt);
+	}
 
 }
 
+void test_algo0021 (void)
+
+{
+	double n = 6393174.9755;
+	double lat = 0.97738438100;
+	double a = 6378388.0000;
+	double e = 0.081991890;
+
+	double calc = lambert_normal(lat,a,e);
+	printf("Expected:%.4f | Computed:%.4f\n",n,calc);
+	CU_ASSERT(n == truncate(calc,4));
+
+}
 void test_algo0002(void)
 {
 
@@ -141,6 +161,8 @@ int main(int argc, char **argv){
    if ( NULL == CU_add_test(pSuite, "Test Algo0002", test_algo0002) ||
         NULL == CU_add_test(pSuite, "Test Algo0012", test_algo0012) ||
         NULL == CU_add_test(pSuite,"Test Algo004",test_algo004)     ||
+        NULL == CU_add_test(pSuite,"Test algo0021",test_algo0021)   ||
+        NULL == CU_add_test(pSuite,"test_algo009",test_algo009)     ||
         NULL == CU_add_test(pSuite, "Test lambert", test_lambert)
       ) 
    {
