@@ -29,7 +29,7 @@ double rounded_down(double val,int n){
 void test_lambert(void)
 {
 
-	Point org = {1029705.083,272723.849};
+	Point org = {994272.661,113467.422};
 	Point dest = {0,0};
 	LambertZone zone = LAMBERT_I;
 
@@ -39,6 +39,18 @@ void test_lambert(void)
 
 }
 
+void test_algo0021(void)
+{
+
+
+
+}
+
+void test_algo009(void)
+{
+
+
+}
 
 void test_algo0002(void)
 {
@@ -128,7 +140,9 @@ int main(int argc, char **argv){
    /* add the tests to the suite */
    if ( NULL == CU_add_test(pSuite, "Test Algo0002", test_algo0002) ||
         NULL == CU_add_test(pSuite, "Test Algo0012", test_algo0012) ||
-        NULL == CU_add_test(pSuite,"Test Algo004",test_algo004) ) 
+        NULL == CU_add_test(pSuite,"Test Algo004",test_algo004)     ||
+        NULL == CU_add_test(pSuite, "Test lambert", test_lambert)
+      ) 
    {
       CU_cleanup_registry();
       return CU_get_error();

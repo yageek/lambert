@@ -8,10 +8,15 @@
 #include <math.h>
 #include <stdio.h>
 
+#define RAD_TO_DEG(x) x*180/M_PI
+#define DISPLAY_POINT(point) printf(#point" X:%f | Y:%f | Z:%f\n",point.x,point.y,point.z);
+#define DISPLAY_POINT_REF(point) printf(#point" X:%f | Y:%f | Z:%f\n",point->x,point->y,point->z);
+
 static double lambert_n[6] = {0.7604059656, 0.7289686274, 0.6959127966, 0.6712679322, 0.7289686274, 0.7256077650};
 static double lambert_c[6] = {11603796.98, 11745793.39, 11947992.52, 12136281.99, 11745793.39, 11754255.426};
 static double lambert_xs[6]= {600000.0, 600000.0, 600000.0, 234.358, 600000.0, 700000.0};
 static double lambert_ys[6]= {5657616.674, 6199695.768, 6791905.085, 7239161.542, 8199695.768, 12655612.050};
+
 
 
 
@@ -70,7 +75,7 @@ void lambert_to_geographic(const Point * org,Point *dest, LambertZone zone, doub
  *
 */
 
-double lambert_normal(lat,a,e)
+double lambert_normal(double lat, double a, double e)
 {
 
 	return a/sqrt(1-e*e*sin(lat)*sin(lat));
@@ -82,7 +87,7 @@ double lambert_normal(lat,a,e)
  *
  */
 
- Point geographic_to_cartesian(lon,lat,he,a,e)
+ Point geographic_to_cartesian(double lon, double lat, double he, double a, double e)
  {
  	double N = lambert_normal(lat,a,e);
  	
@@ -139,35 +144,25 @@ double lambert_normal(lat,a,e)
 
 void lambert_to_wgs84(const Point * org, Point *dest,LambertZone zone){
 
-	double n = lambert_n[zone];
-	double C = lambert_c[zone];
-	double x_s = lambert_xs[zone];
-	double y_s = lambert_ys[zone];
+	lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_WGS84,DEFAULT_EPS);
 
-	double x = org->x;
-	double y = org->y;
+	 DISPLAY_POINT_REF(dest);
 
-	double lon, gamma, R, lat_iso;
+	 Point temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
 
-	R = sqrt((x-x_s)*(x-x_s)+(y-y_s)*(y-y_s));
+	 temp.x-=168;
+	 temp.y=-60;
+	 temp.z+=320;
+	 
+	 DISPLAY_POINT(temp);
 
-	gamma = atan((x-x_s)/(y_s-y));
+	 temp = cartesian_to_geographic(temp,A_WGS84,E_WGS84,DEFAULT_EPS);
 
-	lon = LON_MERI_NTF + gamma/n;
+	 DISPLAY_POINT(temp);
 
-	lat_iso = -1/n*log(fabs(R/C));
+	 dest->x = temp.x;
+	 dest->y = temp.y;
 
-	double lat = lat_from_lat_iso(lat_iso,E_CLARK_IGN,DEFAULT_EPS);
-
-	Point pt_cartesian = geographic_to_cartesian(lon,lat,A_CLARK_IGN,E_CLARK_IGN);
-
-	pt_cartesian.x-=168;
-	pt_cartesian.y=-60;
-	pt_cartesian.z+=320;
-
-	pt_cartesian = cartesian_to_geographic(pt_cartesian,A_CLARK_IGN,E_CLARK_IGN,DEFAULT_EPS);
-
-	dest->x = pt_cartesian.x;
-	dest->y = pt_cartesian.y;
+	 printf("(RAD)Lon:%f - Lat:%f | (DEG)Lon:%f - Lat:%f\n",dest->x,dest->y,RAD_TO_DEG(dest->x),RAD_TO_DEG(dest->y));
 
 }
