@@ -86,17 +86,29 @@ void test_algo0012(void)
 		Point val ;
 		val = cartesian_to_geographic(sample,a[i],e[i],eps[i]);
 		
-		printf("X Computed:%.11f - Expected:%.11f\n",val.x,lon[i]);
+		// printf("X Computed:%.11f - Expected:%.11f\n",val.x,lon[i]);
 		CU_ASSERT(fabs(val.x - lon[i]) <= ign_eps);
-		printf("Y Computed:%.11f - Expected:%.11f\n",val.y,lat[i]);
+		// printf("Y Computed:%.11f - Expected:%.11f\n",val.y,lat[i]);
 		CU_ASSERT(fabs(val.y - lat[i]) <= ign_eps);
-		printf("Z Computed:%.11f - Expected:%.11f\n",val.z,he[i]);
+		// printf("Z Computed:%.11f - Expected:%.11f\n",val.z,he[i]);
 		CU_ASSERT(truncate(val.z,4) == he[i] ) ;
 	}
 
 
 }
+void test_algo004(void)
+{
 
+	Point org = {1029705.083,272723.849,0};
+	Point dest = {0,0,0};
+	Point expected = {0.145512099,0.872664626};
+
+
+	lambert_to_geographic(&org,&dest, LAMBERT_I, LON_MERID_GREENWICH,E_CLARK_IGN,1e-9);
+	printf("Lat:%.9f - Lon:%.9f - Expected:Lat:%.9f - Lon:%.9f\n",dest.x,dest.y,expected.x,expected.y);
+	CU_ASSERT(fabs(dest.x - expected.x) <= 1e-9);
+	CU_ASSERT(fabs(dest.y - expected.y) <= 1e-9);
+}
 
 int main(int argc, char **argv){
 
@@ -115,7 +127,8 @@ int main(int argc, char **argv){
 
    /* add the tests to the suite */
    if ( NULL == CU_add_test(pSuite, "Test Algo0002", test_algo0002) ||
-        NULL == CU_add_test(pSuite, "Test Algo0012", test_algo0012) ) 
+        NULL == CU_add_test(pSuite, "Test Algo0012", test_algo0012) ||
+        NULL == CU_add_test(pSuite,"Test Algo004",test_algo004) ) 
    {
       CU_cleanup_registry();
       return CU_get_error();
