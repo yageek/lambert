@@ -144,7 +144,7 @@ double lambert_normal(double lat, double a, double e)
 
 void lambert_to_wgs84(const Point * org, Point *dest,LambertZone zone){
 
-	lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_WGS84,DEFAULT_EPS);
+	lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
 
 	 DISPLAY_POINT_REF(dest);
 
@@ -163,6 +163,6 @@ void lambert_to_wgs84(const Point * org, Point *dest,LambertZone zone){
 	 dest->x = temp.x;
 	 dest->y = temp.y;
 
-	 printf("(RAD)Lon:%.11ff - Lat:%.11f | (DEG)Lon:%.11f - Lat:%.11f\n",dest->x,dest->y,RAD_TO_DEG(dest->x),RAD_TO_DEG(dest->y));
+	 printf("(RAD)Lon:%.11f - Lat:%.11f | (DEG)Lon:%.11f - Lat:%.11f\n",dest->x,dest->y,RAD_TO_DEG(dest->x),RAD_TO_DEG(dest->y));
 
 }
