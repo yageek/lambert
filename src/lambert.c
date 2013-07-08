@@ -173,3 +173,15 @@ void lambert_to_wgs84(const Point * org, Point *dest,LambertZone zone){
 #endif
 
 }
+
+
+void lambert_to_wgs84_deg(const Point * org, Point *dest, LambertZone zone)
+{
+	Point temp = {0,0,0};
+	
+	lambert_to_wgs84(org,&temp,zone);
+
+	dest->x = temp.x * 180/M_PI;
+	dest->y = temp.y * 180/M_PI;
+	dest->z = temp.z * 180/M_PI;
+}

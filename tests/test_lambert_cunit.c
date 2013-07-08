@@ -28,6 +28,16 @@ double rounded_down(double val,int n){
 	return floorf(val*p)/p;
 }
 
+void test_lambert_deg(void)
+{
+	Point org = {999534.581,112186.569,0};
+	Point dest = {0,0,0};
+	LambertZone zone = LAMBERT_I;
+
+	lambert_to_wgs84_deg(&org, &dest, zone);
+	printf("(Deg)Lon:%.11f - Lat:%.11f - H:%.11f\n",dest.x,dest.y,dest.z);
+}
+
 void test_lambert(void)
 {
 
@@ -161,6 +171,7 @@ int main(int argc, char **argv){
         NULL == CU_add_test(pSuite,"Test Algo004",test_algo004)     ||
         NULL == CU_add_test(pSuite,"Test algo0021",test_algo0021)   ||
         NULL == CU_add_test(pSuite,"test_algo009",test_algo009)     ||
+        NULL == CU_add_test(pSuite,"test_algo009",test_lambert_deg)     ||
         NULL == CU_add_test(pSuite, "Test lambert", test_lambert)
       ) 
    {

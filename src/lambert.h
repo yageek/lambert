@@ -31,10 +31,16 @@ typedef struct {
 double lambert_normal(double lat, double a, double e);
 
 /*
- * Convert a Point struct from one lambert zone to WGS84 
+ * Convert a Point struct from one lambert zone to WGS84 (Rad)
  *
  */
 void lambert_to_wgs84(const Point * org, Point *dest, LambertZone zone);
+
+/*
+ * Convert a Point struct from one lambert zone to WGS84 (Deg)
+ *
+ */
+void lambert_to_wgs84_deg(const Point * org, Point *dest, LambertZone zone);
 
 /*
  * ALGO0002
