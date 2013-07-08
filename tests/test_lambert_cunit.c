@@ -3,7 +3,7 @@
 #include <CUnit/Automated.h>
 #include <math.h>
 #include <stdlib.h>
-#include "../lib/lambert.h"
+#include "../src/lambert.h"
 
 #define DISPLAY_POINT(point) printf(#point" X:%f | Y:%f | Z:%f\n",point.x,point.y,point.z);
 
@@ -36,8 +36,6 @@ void test_lambert(void)
 	LambertZone zone = LAMBERT_I;
 
 	lambert_to_wgs84(&org, &dest, zone);
-	// ck_assert_msg(dest.x == 0.145512099,"Failed: Expect 0.145512099 E- Found:%d",dest.x);
-	// ck_assert_msg(dest.y == 0.872664626,"Failed: Expect 0.872664626 N - Found:%d",dest.y);
 
 }
 
