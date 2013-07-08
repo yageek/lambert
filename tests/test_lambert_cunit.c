@@ -3,7 +3,7 @@
 #include <CUnit/Automated.h>
 #include <math.h>
 #include <stdlib.h>
-#include "../lib/lambert.h"
+#include "../src/lambert.h"
 
 #define DISPLAY_POINT(point) printf(#point" X:%f | Y:%f | Z:%f\n",point.x,point.y,point.z);
 

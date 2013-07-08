@@ -4,5 +4,5 @@ project(lambert)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
 enable_testing()
-add_subdirectory(lib)
+add_subdirectory(src)
 add_subdirectory(tests)
