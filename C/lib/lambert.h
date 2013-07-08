@@ -1,7 +1,4 @@
-#include "basic.h"
-
 #define DEFAULT_EPS 1e-10
-
 #define E_CLARK_IGN 0.08248325676
 #define E_WGS84 0.08181919106
 
@@ -20,6 +17,11 @@ typedef enum {
 	LAMBERT_93= 5
 } LambertZone;
 
+typedef struct {
+	double x;
+	double y;
+	double z;
+} Point;
 
 
 /*
