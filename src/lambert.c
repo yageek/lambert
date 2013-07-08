@@ -4,6 +4,7 @@
 */
 
 #include "lambert.h"
+#include "config.h"
 
 #include <math.h>
 #include <stdio.h>
@@ -144,24 +145,32 @@ void lambert_to_wgs84(const Point * org, Point *dest,LambertZone zone){
 
 	lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
 
+#ifdef DEBUG
 	 DISPLAY_POINT_REF(dest);
+#endif
 
 	 Point temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
 
 	 temp.x= temp.x - 168;
 	 temp.y= temp.y - 60;
 	 temp.z= temp.z + 320;
-	 
+
+#ifdef DEBUG
 	 DISPLAY_POINT(temp);
+#endif
 
 	 //WGS84 refers to greenwich
 	 temp = cartesian_to_geographic(temp, LON_MERID_GREENWICH, A_WGS84,E_WGS84,DEFAULT_EPS);
 
+#ifdef DEBUG
 	 DISPLAY_POINT(temp);
+#endif
 
 	 dest->x = temp.x;
 	 dest->y = temp.y;
 
+#ifdef DEBUG
 	 printf("(RAD)Lon:%.11f - Lat:%.11f | (DEG)Lon:%.11f - Lat:%.11f\n",dest->x,dest->y,RAD_TO_DEG(dest->x),RAD_TO_DEG(dest->y));
+#endif
 
 }
