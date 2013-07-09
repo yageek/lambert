@@ -8,6 +8,9 @@
 #define LON_MERID_PARIS 0
 #define LON_MERID_GREENWICH 0.04079234433
 
+#define DISPLAY_YGLambertPoint(YGLambertPoint) printf(#YGLambertPoint" X:%f | Y:%f | Z:%f\n",YGLambertPoint.x,YGLambertPoint.y,YGLambertPoint.z);
+#define DISPLAY_YGLambertPoint_REF(YGLambertPoint) printf(#YGLambertPoint" X:%f | Y:%f | Z:%f\n",YGLambertPoint->x,YGLambertPoint->y,YGLambertPoint->z);
+
 typedef enum {
 	LAMBERT_I=0,
 	LAMBERT_II=1,

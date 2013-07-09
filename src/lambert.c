@@ -6,7 +6,9 @@
 #include "lambert.h"
 #include <math.h>
 #include <stdio.h>
+
 #define RAD_TO_DEG(x) x*180/M_PI
+
 #define DISPLAY_YGLambertPoint(YGLambertPoint) printf(#YGLambertPoint" X:%f | Y:%f | Z:%f\n",YGLambertPoint.x,YGLambertPoint.y,YGLambertPoint.z);
 #define DISPLAY_YGLambertPoint_REF(YGLambertPoint) printf(#YGLambertPoint" X:%f | Y:%f | Z:%f\n",YGLambertPoint->x,YGLambertPoint->y,YGLambertPoint->z);
 
@@ -142,33 +144,17 @@ void lambert_to_wgs84(const YGLambertPoint * org, YGLambertPoint *dest,LambertZo
 
 	lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
 
-#ifdef DEBUG
-	 DISPLAY_YGLambertPoint_REF(dest);
-#endif
-
 	 YGLambertPoint temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
 
 	 temp.x= temp.x - 168;
 	 temp.y= temp.y - 60;
 	 temp.z= temp.z + 320;
 
-#ifdef DEBUG
-	 DISPLAY_YGLambertPoint(temp);
-#endif
-
 	 //WGS84 refers to greenwich
 	 temp = cartesian_to_geographic(temp, LON_MERID_GREENWICH, A_WGS84,E_WGS84,DEFAULT_EPS);
 
-#ifdef DEBUG
-	 DISPLAY_YGLambertPoint(temp);
-#endif
-
 	 dest->x = temp.x;
 	 dest->y = temp.y;
-
-#ifdef DEBUG
-	 printf("(RAD)Lon:%.11f - Lat:%.11f | (DEG)Lon:%.11f - Lat:%.11f\n",dest->x,dest->y,RAD_TO_DEG(dest->x),RAD_TO_DEG(dest->y));
-#endif
 
 }
 
