@@ -4,13 +4,11 @@
 */
 
 #include "lambert.h"
-
 #include <math.h>
 #include <stdio.h>
-
 #define RAD_TO_DEG(x) x*180/M_PI
-#define DISPLAY_POINT(point) printf(#point" X:%f | Y:%f | Z:%f\n",point.x,point.y,point.z);
-#define DISPLAY_POINT_REF(point) printf(#point" X:%f | Y:%f | Z:%f\n",point->x,point->y,point->z);
+#define DISPLAY_YGLambertPoint(YGLambertPoint) printf(#YGLambertPoint" X:%f | Y:%f | Z:%f\n",YGLambertPoint.x,YGLambertPoint.y,YGLambertPoint.z);
+#define DISPLAY_YGLambertPoint_REF(YGLambertPoint) printf(#YGLambertPoint" X:%f | Y:%f | Z:%f\n",YGLambertPoint->x,YGLambertPoint->y,YGLambertPoint->z);
 
 static double lambert_n[6] = {0.7604059656, 0.7289686274, 0.6959127966, 0.6712679322, 0.7289686274, 0.7256077650};
 static double lambert_c[6] = {11603796.98, 11745793.39, 11947992.52, 12136281.99, 11745793.39, 11754255.426};
@@ -41,7 +39,7 @@ double lat_from_lat_iso(double lat_iso, double e,double eps)
 *	ALGO0004 - Lambert vers geographiques
 */
 
-void lambert_to_geographic(const Point * org,Point *dest, LambertZone zone, double lon_merid, double e, double eps)
+void lambert_to_geographic(const YGLambertPoint * org,YGLambertPoint *dest, LambertZone zone, double lon_merid, double e, double eps)
 {
 	double n = lambert_n[zone];
 	double C = lambert_c[zone];
@@ -85,11 +83,11 @@ double lambert_normal(double lat, double a, double e)
  *
  */
 
- Point geographic_to_cartesian(double lon, double lat, double he, double a, double e)
+ YGLambertPoint geographic_to_cartesian(double lon, double lat, double he, double a, double e)
  {
  	double N = lambert_normal(lat,a,e);
  	
- 	Point pt = {0,0,0};
+ 	YGLambertPoint pt = {0,0,0};
  	pt.x = (N+he)*cos(lat)*cos(lon);
 
  	pt.y = (N+he)*cos(lat)*sin(lon);
@@ -104,7 +102,7 @@ double lambert_normal(double lat, double a, double e)
  * ALGO0012 - Passage des coordonnées cartésiennes aux coordonnées géographiques
  */
 
- Point cartesian_to_geographic(Point org, double meridien, double a, double e , double eps)
+ YGLambertPoint cartesian_to_geographic(YGLambertPoint org, double meridien, double a, double e , double eps)
  {
  	double x = org.x, y = org.y, z = org.z;
 
@@ -124,7 +122,7 @@ double lambert_normal(double lat, double a, double e)
  	
  	double he = module/cos(phi_i) - a/sqrt(1-e*e*sin(phi_i)*sin(phi_i));
  	
- 	Point pt;
+ 	YGLambertPoint pt;
  	pt.x = lon;
  	pt.y = phi_i;
  	pt.z = he;
@@ -140,29 +138,29 @@ double lambert_normal(double lat, double a, double e)
  *
  */
 
-void lambert_to_wgs84(const Point * org, Point *dest,LambertZone zone){
+void lambert_to_wgs84(const YGLambertPoint * org, YGLambertPoint *dest,LambertZone zone){
 
 	lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
 
 #ifdef DEBUG
-	 DISPLAY_POINT_REF(dest);
+	 DISPLAY_YGLambertPoint_REF(dest);
 #endif
 
-	 Point temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
+	 YGLambertPoint temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
 
 	 temp.x= temp.x - 168;
 	 temp.y= temp.y - 60;
 	 temp.z= temp.z + 320;
 
 #ifdef DEBUG
-	 DISPLAY_POINT(temp);
+	 DISPLAY_YGLambertPoint(temp);
 #endif
 
 	 //WGS84 refers to greenwich
 	 temp = cartesian_to_geographic(temp, LON_MERID_GREENWICH, A_WGS84,E_WGS84,DEFAULT_EPS);
 
 #ifdef DEBUG
-	 DISPLAY_POINT(temp);
+	 DISPLAY_YGLambertPoint(temp);
 #endif
 
 	 dest->x = temp.x;
@@ -175,9 +173,9 @@ void lambert_to_wgs84(const Point * org, Point *dest,LambertZone zone){
 }
 
 
-void lambert_to_wgs84_deg(const Point * org, Point *dest, LambertZone zone)
+void lambert_to_wgs84_deg(const YGLambertPoint * org, YGLambertPoint *dest, LambertZone zone)
 {
-	Point temp = {0,0,0};
+	YGLambertPoint temp = {0,0,0};
 	
 	lambert_to_wgs84(org,&temp,zone);
 

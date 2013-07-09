@@ -21,7 +21,7 @@ typedef struct {
 	double x;
 	double y;
 	double z;
-} Point;
+} YGLambertPoint;
 
 
 /*
@@ -31,16 +31,16 @@ typedef struct {
 double lambert_normal(double lat, double a, double e);
 
 /*
- * Convert a Point struct from one lambert zone to WGS84 (Rad)
+ * Convert a YGLambertPoint struct from one lambert zone to WGS84 (Rad)
  *
  */
-void lambert_to_wgs84(const Point * org, Point *dest, LambertZone zone);
+void lambert_to_wgs84(const YGLambertPoint * org, YGLambertPoint *dest, LambertZone zone);
 
 /*
- * Convert a Point struct from one lambert zone to WGS84 (Deg)
+ * Convert a YGLambertPoint struct from one lambert zone to WGS84 (Deg)
  *
  */
-void lambert_to_wgs84_deg(const Point * org, Point *dest, LambertZone zone);
+void lambert_to_wgs84_deg(const YGLambertPoint * org, YGLambertPoint *dest, LambertZone zone);
 
 /*
  * ALGO0002
@@ -52,12 +52,12 @@ double lat_from_lat_iso(double lat_iso, double e, double eps);
 * ALGO0012
 */
 
-Point cartesian_to_geographic(Point org, double meridien, double a, double e , double eps);
+YGLambertPoint cartesian_to_geographic(YGLambertPoint org, double meridien, double a, double e , double eps);
 
 /*
  * ALGO004
  */
-void lambert_to_geographic(const Point * org,Point *dest, LambertZone zone, double lon_merid, double e, double eps);
+void lambert_to_geographic(const YGLambertPoint * org,YGLambertPoint *dest, LambertZone zone, double lon_merid, double e, double eps);
 
 /**
  * ALGO0009 - Transformations geographiques -> cartésiennes
@@ -65,4 +65,4 @@ void lambert_to_geographic(const Point * org,Point *dest, LambertZone zone, doub
  *
  */
 
- Point geographic_to_cartesian(double lon, double lat, double he, double a, double e);
+ YGLambertPoint geographic_to_cartesian(double lon, double lat, double he, double a, double e);
