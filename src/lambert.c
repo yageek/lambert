@@ -175,6 +175,18 @@ double lat_iso(double lat, double e)
 	return log(tan(M_PI_4 + lat/2)*pow((1-e*sin(lat))/(1+e*sin(lat)),e/2));
 }
 
+YGLambertPoint coord_transform(double e, double n, double c, double lambda_c, double x_s, double y_s , double lon, double lat)
+{
+	YGLambertPoint dest = {0,0,0};
+
+	double latiso = lat_iso(lat,e);
+	dest.x = x_s + e*exp(-n*latiso)*sin(n*(lon-lambda_c));
+	dest.y = y_s + e*exp(n*latiso)*cos(n*(lon-lambda_c));
+
+	return dest;
+
+}
+
 YGLambertPoint switch_geodesic_system(YGLambertPoint u, Vector t, double d, Vector r)
 {
 	YGLambertPoint v = {0,0,0};
