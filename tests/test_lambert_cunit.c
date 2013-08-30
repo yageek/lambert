@@ -150,6 +150,18 @@ void test_algo004(void)
 	CU_ASSERT(fabs(dest.y - expected.y) <= 1e-9);
 }
 
+
+void testBug2(void)
+{
+	YGLambertPoint org = {668832.5384,6950138.7285,0};
+	YGLambertPoint dest = {0,0,0};
+	LambertZone zone= LAMBERT_93;
+
+	lambert_to_wgs84_deg(&org,&dest,zone);
+	printf("Lat:%.9f - Lon:%.9f",dest.y,dest.x);
+
+}
+
 int main(int argc, char **argv){
 
 	CU_pSuite pSuite = NULL;
@@ -172,6 +184,7 @@ int main(int argc, char **argv){
         NULL == CU_add_test(pSuite,"Test algo0021",test_algo0021)   ||
         NULL == CU_add_test(pSuite,"test_algo009",test_algo009)     ||
         NULL == CU_add_test(pSuite,"test_algo009",test_lambert_deg)     ||
+        NULL == CU_add_test(pSuite,"testBug2",testBug2)     ||
         NULL == CU_add_test(pSuite, "Test lambert", test_lambert)
       ) 
    {

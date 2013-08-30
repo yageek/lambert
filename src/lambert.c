@@ -169,3 +169,16 @@ void lambert_to_wgs84_deg(const YGLambertPoint * org, YGLambertPoint *dest, Lamb
 	dest->y = temp.y * 180/M_PI;
 	dest->z = temp.z * 180/M_PI;
 }
+
+
+YGLambertPoint switch_geodesic_system(YGLambertPoint u, Vector t, double d, Vector r)
+{
+	YGLambertPoint v = {0,0,0};
+
+	v.x = t.x + u.x*(1+d) + u.z * r.y - u.y * r.z;
+	v.y = t.y + u.y*(1+d) + u.x * r.z - u.y * r.z;
+	v.z = t.z +u.z*(1+d) + u.y*r.x -u.x*r.y;
+
+	return v;
+
+}

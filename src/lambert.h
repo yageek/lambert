@@ -1,3 +1,6 @@
+#ifndef __LAMBERT_H
+#define __LAMBERT_H
+
 #define DEFAULT_EPS 1e-10
 #define E_CLARK_IGN 0.08248325676
 #define E_WGS84 0.08181919106
@@ -25,6 +28,8 @@ typedef struct {
 	double y;
 	double z;
 } YGLambertPoint;
+
+typedef YGLambertPoint Vector;
 
 
 /*
@@ -69,3 +74,11 @@ void lambert_to_geographic(const YGLambertPoint * org,YGLambertPoint *dest, Lamb
  */
 
  YGLambertPoint geographic_to_cartesian(double lon, double lat, double he, double a, double e);
+
+ /**
+ * ALGO13 Transformation de Coordonnées à 7 paramètres entre deux systèmes géodésiques
+ */
+ 
+ YGLambertPoint switch_geodesic_system(YGLambertPoint u, Vector t, double d, Vector r);
+ 
+ #endif
