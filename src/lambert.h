@@ -81,4 +81,8 @@ void lambert_to_geographic(const YGLambertPoint * org,YGLambertPoint *dest, Lamb
  
  YGLambertPoint switch_geodesic_system(YGLambertPoint u, Vector t, double d, Vector r);
  
+ /**
+ * Algo0001  Calcul de la latitude isomérique
+ */
+double lat_iso(double lat, double e);
  #endif

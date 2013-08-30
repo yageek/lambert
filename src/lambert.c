@@ -170,6 +170,10 @@ void lambert_to_wgs84_deg(const YGLambertPoint * org, YGLambertPoint *dest, Lamb
 	dest->z = temp.z * 180/M_PI;
 }
 
+double lat_iso(double lat, double e)
+{
+	return log(tan(M_PI_4 + lat/2)*pow((1-e*sin(lat))/(1+e*sin(lat)),e/2));
+}
 
 YGLambertPoint switch_geodesic_system(YGLambertPoint u, Vector t, double d, Vector r)
 {
