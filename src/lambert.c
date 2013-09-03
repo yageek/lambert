@@ -142,7 +142,8 @@ double lambert_normal(double lat, double a, double e)
 
 void lambert_to_wgs84(const YGLambertPoint * org, YGLambertPoint *dest,LambertZone zone){
 
-	lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
+	//lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
+	lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_WGS84,DEFAULT_EPS);
 
 	 YGLambertPoint temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
 
