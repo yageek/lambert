@@ -161,6 +161,11 @@ void testBug2(void)
 	printf("Lat:%.9f - Lon:%.9f",dest.y,dest.x);
 
 }
+void testOpenGrid(void)
+{
+	test_file();
+
+}
 
 int main(int argc, char **argv){
 
@@ -185,6 +190,7 @@ int main(int argc, char **argv){
         NULL == CU_add_test(pSuite,"test_algo009",test_algo009)     ||
         NULL == CU_add_test(pSuite,"test_algo009",test_lambert_deg)     ||
         NULL == CU_add_test(pSuite,"testBug2",testBug2)     ||
+        NULL == CU_add_test(pSuite,"testNTFRGF93",testOpenGrid)     ||
         NULL == CU_add_test(pSuite, "Test lambert", test_lambert)
       ) 
    {

@@ -5,4 +5,6 @@
 
 YGLambertPoint intpol_gsb(YGLambertPoint ntf_point);
 
+void test_file();
+
 #endif
