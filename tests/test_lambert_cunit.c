@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include "../src/lambert.h"
+#include "../src/ntv2.h"
 
 #define DISPLAY_POINT(point) printf(#point" X:%f | Y:%f | Z:%f\n",point.x,point.y,point.z);
 
@@ -163,9 +164,8 @@ void testBug2(void)
 }
 void testOpenGrid(void)
 {	
-	YGLambertPoint org = {668832.5384,6950138.7285,0};
-	rgf93_to_ntf(org);
-
+	YGLambertPoint org = {668832.5384,6950138.7285,0};	
+    rgf93_to_ntf(org);
 }
 
 int main(int argc, char **argv){
