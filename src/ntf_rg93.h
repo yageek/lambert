@@ -5,6 +5,8 @@
 
 YGLambertPoint intpol_gsb(YGLambertPoint ntf_point);
 
-void test_file();
+void rgf93_to_ntf(YGLambertPoint rgf_point);
+
+void printParameters();
 
 #endif
