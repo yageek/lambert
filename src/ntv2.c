@@ -117,25 +117,38 @@ void printParameters()
     
 }
 
+void printReg(NTV2Reg reg)
+{
+    printf("LON:%f - LAT:%f - TX:%f - TY:%f - TZ:%f - PRE:%f\n",reg.lon,reg.lat,reg.tx,reg.ty,reg.tz,reg.precision);
+}
 void unloadGrid()
 {
     fclose(gridFD);
+    free(regcache);
 }
+
 void rgf93_to_ntf(YGLambertPoint pt)
 {
-    if(!gridFD && loadGrid())
-    {
-        exit(EXIT_FAILURE);
-    }
-    int found = 0;
-    YGLambertPoint t1,t2,t3,t4;
+    if(!gridFD)
+        loadGrid();
+        
+    int foundlat = 0, foundlon=0;
     
-    while(!found)
+    NTV2Reg t1,t2,t3,t4;
+    
+    double minLat, maxLat;
+    for(int i =0; i< lastRegPos;++i)
     {
-        
-        
+        NTV2Reg a = regcache[i], b = regcache[i+1];
+        if(pt.x >= a.lon && pt.x <=b.lon)
+        {
+            minLat = a.lon;
+            maxLat = b.lon;
+            break;
+        }
         
     }
+    
     
     unloadGrid();
 }

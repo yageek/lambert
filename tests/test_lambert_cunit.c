@@ -164,7 +164,7 @@ void testBug2(void)
 }
 void testOpenGrid(void)
 {	
-	YGLambertPoint org = {668832.5384,6950138.7285,0};	
+	YGLambertPoint org = {2.424971108, 48.844445839,0};	
     rgf93_to_ntf(org);
 }
 
