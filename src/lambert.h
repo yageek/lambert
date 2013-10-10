@@ -36,6 +36,12 @@ typedef struct {
     CoordUnit unit;
 } YGPoint;
 
+typedef struct
+{
+    double tx;
+    double ty;
+    double tz;
+} YGTransform;
 
 typedef YGPoint Vector;
 

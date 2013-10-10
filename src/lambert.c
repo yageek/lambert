@@ -6,6 +6,7 @@
 #include "lambert.h"
 #include <math.h>
 #include <stdio.h>
+#include "ntv2.h"
 
 #define RAD_TO_DEG(x) x*180/M_PI
 
@@ -144,7 +145,7 @@ void lambert_to_wgs84(const YGPoint * org, YGPoint *dest,YGLambertZone zone){
 
 	lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
     YGPoint temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
-
+    
 	 temp.x= temp.x - 168;
 	 temp.y= temp.y - 60;
 	 temp.z= temp.z + 320;

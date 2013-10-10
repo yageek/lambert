@@ -11,6 +11,7 @@
 #define MAX_PATH_SIZE 1024
 #define DELTA_REALLOCATION 10
 
+
 typedef struct {
     
 	double lon;
@@ -166,7 +167,7 @@ void ntvreg_around_point(const YGPoint pt, NTV2Reg *t1, NTV2Reg *t2, NTV2Reg * t
     *t3 = *(--searchReg);
 
 }
-void rgf93_to_ntf(YGPoint pt)
+YGTransform rgf93_to_ntf(YGPoint pt)
 {
     if(!gridFD)
         loadGrid();
@@ -178,7 +179,7 @@ void rgf93_to_ntf(YGPoint pt)
     double x = (pt.x - t1.lon)/(t3.lon - t1.lon);
     double y = (pt.y - t1.lat)/(t2.lat - t1.lat);
     
-    YGPoint tm;
+   
     double d[3], t1Buf[3], t2Buf[3], t3Buf[3], t4Buf[3];
     
     regToBuff(t1Buf,t1);
@@ -191,10 +192,6 @@ void rgf93_to_ntf(YGPoint pt)
         d[i] =  (1-x)*(1-y)*t1Buf[i] + (1-x)*y*t2Buf[i] + (1-y)*x*t3Buf[i] + x*y*t4Buf[i];
     }
     
-    YGPoint null ={0,0,0}, transform ={d[0],d[2],d[2]};
-    YGPoint dest;
-    
-    dest = switch_geodesic_system(dest, transform, 0, null);
-   
-    unloadGrid();
+    YGTransform tm ={d[0],d[2],d[2]};
+    return tm;
 }
