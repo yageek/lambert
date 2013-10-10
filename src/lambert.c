@@ -161,27 +161,32 @@ double lambert_normal(double lat, double a, double e)
 
 void lambert_to_wgs84(const YGPoint * org, YGPoint *dest,YGLambertZone zone){
     
-	lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
-
+	
     YGPoint temp;
-//    if(LAMBERT_93 == zone)
-//    {
-//        YGPoint pt = *dest;
-//        YGTransform tr = rgf93_to_ntf(pt);
-//        pt = pointToRadian(pt);
-//        pt =  geographic_to_cartesian(pt.x,pt.y,pt.z,A_WGS84,E_WGS84);
-//        
-//        YGPoint t = {tr.tx,tr.ty,tr.tz};
-//        YGPoint null= {0,0,0};
-//        
-//        pt =  switch_geodesic_system(pt, t, 0, null);
-//        pt = cartesian_to_geographic(pt, LON_MERID_PARIS, A_CLARK_IGN, E_CLARK_IGN, DEFAULT_EPS);
-//        temp = pt;
-//    }
-//    else
-//    {
+    if(LAMBERT_93 == zone)
+    {
+        lambert_to_geographic(org,dest,zone,LON_MERID_GREENWICH,E_WGS84,DEFAULT_EPS);
+        
+        YGPoint pt = *dest;
+        pt = pointToDegree(pt);
+        
+        YGTransform tr = rgf93_to_ntf(pt);
+        pt = pointToRadian(pt);
+        pt =  geographic_to_cartesian(pt.x,pt.y,pt.z,A_WGS84,E_WGS84);
+        
+        YGPoint t = {tr.tx,tr.ty,tr.tz};
+        YGPoint null= {0,0,0};
+        
+        pt =  switch_geodesic_system(pt, t, 0, null);
+       // pt = cartesian_to_geographic(pt, LON_MERID_PARIS, A_CLARK_IGN, E_CLARK_IGN, DEFAULT_EPS);
+        temp = pt;
+    }
+    else
+    {
+        lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
         temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
-//    }
+
+    }
     
 	 temp.x= temp.x - 168;
 	 temp.y= temp.y - 60;

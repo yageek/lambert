@@ -47,8 +47,6 @@ void test_lambert(void)
 	YGLambertZone zone = LAMBERT_I;
 
 	lambert_to_wgs84(&org, &dest, zone);
-    
-
 }
 
 void test_algo009(void)
