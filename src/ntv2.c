@@ -127,12 +127,15 @@ void unloadGrid()
     free(regcache);
 }
 
-void rgf93_to_ntf(YGLambertPoint pt)
+void regToBuff(double *buf,NTV2Reg reg)
 {
-    if(!gridFD)
-        loadGrid();
-    
-    NTV2Reg t1,t2,t3,t4;
+    buf[0] = reg.tx;
+    buf[1] = reg.ty;
+    buf[3] = reg.tz;
+}
+
+void ntvreg_around_point(const YGLambertPoint pt, NTV2Reg *t1, NTV2Reg *t2, NTV2Reg * t3, NTV2Reg * t4)
+{
     
     NTV2Reg *a = regcache,*b = regcache+1;
     
@@ -149,8 +152,8 @@ void rgf93_to_ntf(YGLambertPoint pt)
         searchReg--;
     }
     
-    t1 = *searchReg;
-    t2 = *(++searchReg);
+    *t1 = *searchReg;
+    *t2 = *(++searchReg);
     
     searchReg = b;
     
@@ -159,9 +162,34 @@ void rgf93_to_ntf(YGLambertPoint pt)
         searchReg++;
     }
     
-    t4 = *(searchReg);
-    t3 = *(--searchReg);
+    *t4 = *(searchReg);
+    *t3 = *(--searchReg);
 
+}
+void rgf93_to_ntf(YGLambertPoint pt)
+{
+    if(!gridFD)
+        loadGrid();
+    
+    NTV2Reg t1,t2,t3,t4;
+    
+    ntvreg_around_point(pt, &t1, &t2, &t3, &t4);
+    
+    double x = (pt.x - t1.lon)/(t3.lon - t1.lon);
+    double y = (pt.y - t1.lat)/(t2.lat - t1.lat);
+    
+    YGLambertPoint tm;
+    double d[3], t1Buf[3], t2Buf[3], t3Buf[3], t4Buf[3];
+    
+    regToBuff(t1Buf,t1);
+    regToBuff(t2Buf,t2);
+    regToBuff(t3Buf,t3);
+    regToBuff(t4Buf,t4);
+    
+    for(int i = 0; i< 3; ++i)
+    {
+        d[i] =  (1-x)*(1-y)*t1Buf[i] + (1-x)*y*t2Buf[i] + (1-y)*x*t3Buf[i] + x*y*t4Buf[i];
+    }
     
     unloadGrid();
 }
