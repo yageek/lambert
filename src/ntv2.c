@@ -191,5 +191,10 @@ void rgf93_to_ntf(YGLambertPoint pt)
         d[i] =  (1-x)*(1-y)*t1Buf[i] + (1-x)*y*t2Buf[i] + (1-y)*x*t3Buf[i] + x*y*t4Buf[i];
     }
     
+    YGLambertPoint null ={0,0,0}, transform ={d[0],d[2],d[2]};
+    YGLambertPoint dest;
+    
+    dest = switch_geodesic_system(dest, transform, 0, null);
+   
     unloadGrid();
 }
