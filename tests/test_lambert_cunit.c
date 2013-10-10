@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include "../src/lambert.h"
-#include "../src/ntv2.h"
+#include "../src/rgf93.h"
 
 #define DISPLAY_POINT(point) printf(#point" X:%f | Y:%f | Z:%f\n",point.x,point.y,point.z);
 
@@ -47,6 +47,7 @@ void test_lambert(void)
 	YGLambertZone zone = LAMBERT_I;
 
 	lambert_to_wgs84(&org, &dest, zone);
+    
 
 }
 
@@ -165,10 +166,10 @@ void testBug2(void)
 void testOpenGrid(void)
 {	
 	YGPoint org = {.x=2.424971108, .y=48.844445839,.z=0,.unit=DEGREE};
-    YGPoint dest = {0,0,0,DEGREE};
+   
+    YGTransform tr = rgf93_to_ntf(org);
     
-   YGTransform tr = rgf93_to_ntf(org);
-    YGPoint t = {-tr.tx,-tr.ty,-tr.tz};
+    YGPoint t = {tr.tx,tr.ty,tr.tz};
     YGPoint null= {0,0,0};
     
     org = pointToRadian(org);

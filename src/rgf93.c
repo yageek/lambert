@@ -1,5 +1,5 @@
 
-#include "ntv2.h"
+#include "rgf93.h"
 #include "config.h"
 
 #include<stdio.h>
@@ -168,7 +168,7 @@ void ntvreg_around_point(const YGPoint pt, NTV2Reg *t1, NTV2Reg *t2, NTV2Reg * t
     *t3 = *(--searchReg);
 
 }
-YGTransform rgf93_to_ntf(YGPoint pt)
+YGTransform ntf_to_rgf93(YGPoint pt)
 {
     if(!gridFD)
         loadGrid();
@@ -196,4 +196,11 @@ YGTransform rgf93_to_ntf(YGPoint pt)
     
     YGTransform tm ={d[0],d[1],d[2]};
     return tm;
+}
+
+YGTransform rgf93_to_ntf(YGPoint pt)
+{
+    YGTransform tm = ntf_to_rgf93(pt);
+    YGTransform val = {-1*tm.tx,-1*tm.ty,-1*tm.tz};
+    return val;
 }
