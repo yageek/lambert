@@ -131,24 +131,37 @@ void rgf93_to_ntf(YGLambertPoint pt)
 {
     if(!gridFD)
         loadGrid();
-        
-    int foundlat = 0, foundlon=0;
     
     NTV2Reg t1,t2,t3,t4;
     
-    double minLat, maxLat;
-    for(int i =0; i< lastRegPos;++i)
+    NTV2Reg *a = regcache,*b = regcache+1;
+    
+    while(!(pt.x >= a->lon && pt.x <= b->lon))
     {
-        NTV2Reg a = regcache[i], b = regcache[i+1];
-        if(pt.x >= a.lon && pt.x <=b.lon)
-        {
-            minLat = a.lon;
-            maxLat = b.lon;
-            break;
-        }
-        
+        ++a;
+        ++b;
     }
     
+    NTV2Reg *searchReg = a;
+    
+    while (searchReg->lat > pt.y)
+    {
+        searchReg--;
+    }
+    
+    t1 = *searchReg;
+    t2 = *(++searchReg);
+    
+    searchReg = b;
+    
+    while (searchReg->lat < pt.y)
+    {
+        searchReg++;
+    }
+    
+    t4 = *(searchReg);
+    t3 = *(--searchReg);
+
     
     unloadGrid();
 }
