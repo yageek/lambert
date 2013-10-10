@@ -45,6 +45,8 @@ typedef struct
 
 typedef YGPoint Vector;
 
+YGPoint pointToRadian(YGPoint p);
+YGPoint pointToDegree(YGPoint p);
 
 /*
  * ALGO0021 - Calcul de la grande Normale 

@@ -164,8 +164,20 @@ void testBug2(void)
 }
 void testOpenGrid(void)
 {	
-	YGPoint org = {2.424971108, 48.844445839,0};
-    rgf93_to_ntf(org);
+	YGPoint org = {.x=2.424971108, .y=48.844445839,.z=0,.unit=DEGREE};
+    YGPoint dest = {0,0,0,DEGREE};
+    
+   YGTransform tr = rgf93_to_ntf(org);
+    YGPoint t = {-tr.tx,-tr.ty,-tr.tz};
+    YGPoint null= {0,0,0};
+    
+    org = pointToRadian(org);
+    org =  geographic_to_cartesian(org.x,org.y,org.z,A_WGS84,E_WGS84);
+    
+    org =  switch_geodesic_system(org, t, 0, null);
+    org = cartesian_to_geographic(org, LON_MERID_PARIS, A_CLARK_IGN, E_CLARK_IGN, DEFAULT_EPS);
+    
+    org = pointToDegree(org);
 }
 
 int main(int argc, char **argv){

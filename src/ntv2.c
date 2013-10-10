@@ -6,6 +6,7 @@
 #include<stdlib.h>
 #include<limits.h>
 #include <string.h>
+#include <math.h>
 
 #define MAX_LINE_BUFFER 1024
 #define MAX_PATH_SIZE 1024
@@ -132,7 +133,7 @@ void regToBuff(double *buf,NTV2Reg reg)
 {
     buf[0] = reg.tx;
     buf[1] = reg.ty;
-    buf[3] = reg.tz;
+    buf[2] = reg.tz;
 }
 
 void ntvreg_around_point(const YGPoint pt, NTV2Reg *t1, NTV2Reg *t2, NTV2Reg * t3, NTV2Reg * t4)
@@ -173,6 +174,7 @@ YGTransform rgf93_to_ntf(YGPoint pt)
         loadGrid();
     
     NTV2Reg t1,t2,t3,t4;
+   
     
     ntvreg_around_point(pt, &t1, &t2, &t3, &t4);
     
@@ -192,6 +194,6 @@ YGTransform rgf93_to_ntf(YGPoint pt)
         d[i] =  (1-x)*(1-y)*t1Buf[i] + (1-x)*y*t2Buf[i] + (1-y)*x*t3Buf[i] + x*y*t4Buf[i];
     }
     
-    YGTransform tm ={d[0],d[2],d[2]};
+    YGTransform tm ={d[0],d[1],d[2]};
     return tm;
 }

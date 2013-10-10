@@ -18,8 +18,26 @@ static double lambert_c[6] = {11603796.98, 11745793.39, 11947992.52, 12136281.99
 static double lambert_xs[6]= {600000.0, 600000.0, 600000.0, 234.358, 600000.0, 700000.0};
 static double lambert_ys[6]= {5657616.674, 6199695.768, 6791905.085, 7239161.542, 8199695.768, 12655612.050};
 
+YGPoint pointToDegree(YGPoint p)
+{
+   
+        p.x = p.x * 180/M_PI;
+        p.y = p.y * 180/M_PI;
+        p.z = p.z * 180/M_PI;
+    
+        return p;
+}
 
-/* 
+YGPoint pointToRadian(YGPoint p)
+{
+        p.x = p.x * M_PI/180;
+        p.y = p.y * M_PI/180;
+        p.z = p.z * M_PI/180;
+    
+    return p;
+}
+
+/*
  * ALGO0002
  */
 
@@ -142,7 +160,7 @@ double lambert_normal(double lat, double a, double e)
  */
 
 void lambert_to_wgs84(const YGPoint * org, YGPoint *dest,YGLambertZone zone){
-
+    
 	lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
     YGPoint temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
     
@@ -164,10 +182,7 @@ void lambert_to_wgs84_deg(const YGPoint * org, YGPoint *dest, YGLambertZone zone
 	YGPoint temp = {0,0,0};
 	
 	lambert_to_wgs84(org,&temp,zone);
-
-	dest->x = temp.x * 180/M_PI;
-	dest->y = temp.y * 180/M_PI;
-	dest->z = temp.z * 180/M_PI;
+    *dest = pointToDegree(temp);
 }
 
 double lat_iso(double lat, double e)
