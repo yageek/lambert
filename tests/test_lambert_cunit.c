@@ -31,9 +31,9 @@ double rounded_down(double val,int n){
 
 void test_lambert_deg(void)
 {
-	YGLambertPoint org = {999534.581,112186.569,0};
-	YGLambertPoint dest = {0,0,0};
-	LambertZone zone = LAMBERT_I;
+	YGPoint org = {999534.581,112186.569,0};
+	YGPoint dest = {0,0,0};
+	YGLambertZone zone = LAMBERT_I;
 
 	lambert_to_wgs84_deg(&org, &dest, zone);
 	printf("(Deg)Lon:%.11f - Lat:%.11f - H:%.11f\n",dest.x,dest.y,dest.z);
@@ -42,9 +42,9 @@ void test_lambert_deg(void)
 void test_lambert(void)
 {
 
-	YGLambertPoint org = {999534.581,112186.569,0};
-	YGLambertPoint dest = {0,0,0};
-	LambertZone zone = LAMBERT_I;
+	YGPoint org = {999534.581,112186.569,0};
+	YGPoint dest = {0,0,0};
+	YGLambertZone zone = LAMBERT_I;
 
 	lambert_to_wgs84(&org, &dest, zone);
 
@@ -62,7 +62,7 @@ void test_algo009(void)
 	unsigned int i;
 	for (i =0; i < 3;++i)
 	{
-		YGLambertPoint pt  = geographic_to_cartesian(lon[i],lat[i],he[i],a[i],e[i]);
+		YGPoint pt  = geographic_to_cartesian(lon[i],lat[i],he[i],a[i],e[i]);
 		DISPLAY_POINT(pt);
 	}
 
@@ -123,8 +123,8 @@ void test_algo0012(void)
 	 double ign_eps = 1e-11;
 	for(i=0; i < 3;++i)
 	{
-		YGLambertPoint sample = {x[i],y[i],z[i]};
-		YGLambertPoint val ;
+		YGPoint sample = {x[i],y[i],z[i]};
+		YGPoint val ;
 		val = cartesian_to_geographic(sample,LON_MERID_PARIS,a[i],e[i],eps[i]);
 		
 		// printf("X Computed:%.11f - Expected:%.11f\n",val.x,lon[i]);
@@ -140,9 +140,9 @@ void test_algo0012(void)
 void test_algo004(void)
 {
 
-	YGLambertPoint org = {1029705.083,272723.849,0};
-	YGLambertPoint dest = {0,0,0};
-	YGLambertPoint expected = {0.145512099,0.872664626};
+	YGPoint org = {1029705.083,272723.849,0};
+	YGPoint dest = {0,0,0};
+	YGPoint expected = {0.145512099,0.872664626};
 
 
 	lambert_to_geographic(&org,&dest, LAMBERT_I, LON_MERID_GREENWICH,E_CLARK_IGN,1e-9);
@@ -154,9 +154,9 @@ void test_algo004(void)
 
 void testBug2(void)
 {
-	YGLambertPoint org = {668832.5384,6950138.7285,0};
-	YGLambertPoint dest = {0,0,0};
-	LambertZone zone= LAMBERT_93;
+	YGPoint org = {668832.5384,6950138.7285,0};
+	YGPoint dest = {0,0,0};
+	YGLambertZone zone= LAMBERT_93;
 
 	lambert_to_wgs84_deg(&org,&dest,zone);
 	printf("Lat:%.9f - Lon:%.9f",dest.y,dest.x);
@@ -164,7 +164,7 @@ void testBug2(void)
 }
 void testOpenGrid(void)
 {	
-	YGLambertPoint org = {2.424971108, 48.844445839,0};
+	YGPoint org = {2.424971108, 48.844445839,0};
     rgf93_to_ntf(org);
 }
 

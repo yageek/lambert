@@ -3,9 +3,9 @@
 
 #include "lambert.h"
 
-YGLambertPoint intpol_gsb(YGLambertPoint ntf_point);
+YGPoint intpol_gsb(YGPoint ntf_point);
 
-void rgf93_to_ntf(YGLambertPoint rgf_point);
+void rgf93_to_ntf(YGPoint rgf_point);
 
 void printParameters();
 
