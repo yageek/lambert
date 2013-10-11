@@ -1,6 +1,7 @@
 #ifndef __LAMBERT_H
 #define __LAMBERT_H
 
+
 #define DEFAULT_EPS 1e-10
 #define E_CLARK_IGN 0.08248325676
 #define E_WGS84 0.08181919106
@@ -10,6 +11,7 @@
 
 #define LON_MERID_PARIS 0
 #define LON_MERID_GREENWICH 0.04079234433
+#define LON_MERID_IERS (LON_MERID_GREENWICH + (0.9/3600.0)*M_PI/180)
 
 #define DISPLAY_YGPoint(YGPoint) printf(#YGPoint" X:%f | Y:%f | Z:%f\n",YGPoint.x,YGPoint.y,YGPoint.z);
 #define DISPLAY_YGPoint_REF(YGPoint) printf(#YGPoint" X:%f | Y:%f | Z:%f\n",YGPoint->x,YGPoint->y,YGPoint->z);

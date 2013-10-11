@@ -31,7 +31,7 @@ double rounded_down(double val,int n){
 
 void test_lambert_deg(void)
 {
-	YGPoint org = {999534.581,112186.569,0};
+	YGPoint org = {994300.623,113409.981,0};
 	YGPoint dest = {0,0,0};
 	YGLambertZone zone = LAMBERT_I;
 
@@ -200,7 +200,7 @@ int main(int argc, char **argv){
         NULL == CU_add_test(pSuite,"Test Algo004",test_algo004)     ||
         NULL == CU_add_test(pSuite,"Test algo0021",test_algo0021)   ||
         NULL == CU_add_test(pSuite,"test_algo009",test_algo009)     ||
-        NULL == CU_add_test(pSuite,"test_algo009",test_lambert_deg)     ||
+        NULL == CU_add_test(pSuite,"test_lambert_deg",test_lambert_deg)     ||
         NULL == CU_add_test(pSuite,"testBug2",testBug2)     ||
         NULL == CU_add_test(pSuite,"testNTFRGF93",testOpenGrid)     ||
         NULL == CU_add_test(pSuite, "Test lambert", test_lambert)
