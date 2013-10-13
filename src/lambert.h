@@ -108,4 +108,9 @@ double lat_iso(double lat, double e);
 * Algo003 
 */
 YGPoint coord_transform(double e, double n, double c, double lambda_c, double x_s, double y_s , double lon, double lat);
+
+/**
+ * Algo 01
+ */
+double latitude_iso_from_lat(double lat, double e);
  #endif

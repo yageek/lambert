@@ -37,6 +37,11 @@ YGPoint pointToRadian(YGPoint p)
     return p;
 }
 
+double latitude_iso_from_lat(double lat, double e)
+{
+    return log(tan(M_PI_4+lat/2.0)*pow(1-e*sin(lat)/(1+e*sin(lat)),e/2));
+}
+
 /*
  * ALGO0002
  */
@@ -169,6 +174,7 @@ void lambert_to_wgs84(const YGPoint * org, YGPoint *dest,YGLambertZone zone){
         
         YGPoint pt = *dest;
         pt = pointToDegree(pt);
+        YGPoint verif = pointToDegree(*dest);
         
         YGTransform tr = rgf93_to_ntf(pt);
         pt = pointToRadian(pt);
