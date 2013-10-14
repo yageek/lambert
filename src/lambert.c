@@ -6,7 +6,6 @@
 #include "lambert.h"
 #include <math.h>
 #include <stdio.h>
-#include "rgf93.h"
 
 #define RAD_TO_DEG(x) x*180/M_PI
 
@@ -39,7 +38,7 @@ YGPoint pointToRadian(YGPoint p)
 
 double latitude_iso_from_lat(double lat, double e)
 {
-    return log(tan(M_PI_4+lat/2.0)*pow(1-e*sin(lat)/(1+e*sin(lat)),e/2));
+    return log(tan(M_PI_4+lat/2)*pow((1-e*sin(lat))/(1+e*sin(lat)),e/2));
 }
 
 /*
@@ -156,8 +155,6 @@ double lambert_normal(double lat, double a, double e)
  	return pt;
  }
 
-
-
 /*
  * Convert Lambert -> WGS84
  * http://geodesie.ign.fr/contenu/fichiers/documentation/pedagogiques/transfo.pdf
@@ -166,45 +163,27 @@ double lambert_normal(double lat, double a, double e)
 
 void lambert_to_wgs84(const YGPoint * org, YGPoint *dest,YGLambertZone zone){
     
-	
-    YGPoint temp;
+    
+  
     if(LAMBERT_93 == zone)
     {
-        lambert_to_geographic(org,dest,zone,LON_MERID_IERS,E_WGS84,DEFAULT_EPS);
-        
-        YGPoint pt = *dest;
-        pt = pointToDegree(pt);
-        YGPoint verif = pointToDegree(*dest);
-        
-        YGTransform tr = rgf93_to_ntf(pt);
-        pt = pointToRadian(pt);
-        
-        pt = geographic_to_cartesian(pt.x,pt.y,pt.z,A_WGS84,E_WGS84);
-        
-        YGPoint t = {tr.tx,tr.ty,tr.tz};
-        YGPoint null= {0,0,0};
-        
-        pt =  switch_geodesic_system(pt, t, 0, null);
-        temp = pt;
-        
+        lambert_to_geographic(org,dest,zone,3*M_PI/180,E_WGS84,DEFAULT_EPS);
     }
     else
     {
         lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
-        temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
-    }
-  
+        YGPoint temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
     
-	 temp.x= temp.x - 168;
-	 temp.y= temp.y - 60;
-	 temp.z= temp.z + 320;
-
-	 //WGS84 refers to greenwich
-	 temp = cartesian_to_geographic(temp, LON_MERID_IERS, A_WGS84,E_WGS84,DEFAULT_EPS);
-
-	 dest->x = temp.x;
-	 dest->y = temp.y;
-
+        temp.x= temp.x - 168;
+        temp.y= temp.y - 60;
+        temp.z= temp.z + 320;
+    
+        //WGS84 refers to greenwich
+        temp = cartesian_to_geographic(temp, LON_MERID_IERS, A_WGS84,E_WGS84,DEFAULT_EPS);
+        
+        dest->x = temp.x;
+        dest->y = temp.y;
+    }
 }
 
 

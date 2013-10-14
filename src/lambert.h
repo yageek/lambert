@@ -12,6 +12,11 @@
 #define LON_MERID_PARIS 0
 #define LON_MERID_GREENWICH 0.04079234433
 #define LON_MERID_IERS (LON_MERID_GREENWICH + (0.9/3600.0)*M_PI/180)
+#define AUTOCOMEIQUE_FIRST 44*M_PI/180
+#define AUTOCOMEIQUE_SECOND 49*M_PI/180
+#define LAT_ORIG 46.5*M_PI/180
+#define ct_x0 700000.0
+#define ct_y0 6600000.0
 
 #define DISPLAY_YGPoint(YGPoint) printf(#YGPoint" X:%f | Y:%f | Z:%f\n",YGPoint.x,YGPoint.y,YGPoint.z);
 #define DISPLAY_YGPoint_REF(YGPoint) printf(#YGPoint" X:%f | Y:%f | Z:%f\n",YGPoint->x,YGPoint->y,YGPoint->z);
