@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include "../src/lambert.h"
+#include "../src/rgf93.h"
 
 #define DISPLAY_POINT(point) printf(#point" X:%f | Y:%f | Z:%f\n",point.x,point.y,point.z);
 
@@ -30,9 +31,9 @@ double rounded_down(double val,int n){
 
 void test_lambert_deg(void)
 {
-	YGLambertPoint org = {999534.581,112186.569,0};
-	YGLambertPoint dest = {0,0,0};
-	LambertZone zone = LAMBERT_I;
+	YGPoint org = {994300.623,113409.981,0};
+	YGPoint dest = {0,0,0};
+	YGLambertZone zone = LAMBERT_I;
 
 	lambert_to_wgs84_deg(&org, &dest, zone);
 	printf("(Deg)Lon:%.11f - Lat:%.11f - H:%.11f\n",dest.x,dest.y,dest.z);
@@ -41,12 +42,11 @@ void test_lambert_deg(void)
 void test_lambert(void)
 {
 
-	YGLambertPoint org = {999534.581,112186.569,0};
-	YGLambertPoint dest = {0,0,0};
-	LambertZone zone = LAMBERT_I;
+	YGPoint org = {999534.581,112186.569,0};
+	YGPoint dest = {0,0,0};
+	YGLambertZone zone = LAMBERT_I;
 
 	lambert_to_wgs84(&org, &dest, zone);
-
 }
 
 void test_algo009(void)
@@ -61,7 +61,7 @@ void test_algo009(void)
 	unsigned int i;
 	for (i =0; i < 3;++i)
 	{
-		YGLambertPoint pt  = geographic_to_cartesian(lon[i],lat[i],he[i],a[i],e[i]);
+		YGPoint pt  = geographic_to_cartesian(lon[i],lat[i],he[i],a[i],e[i]);
 		DISPLAY_POINT(pt);
 	}
 
@@ -122,8 +122,8 @@ void test_algo0012(void)
 	 double ign_eps = 1e-11;
 	for(i=0; i < 3;++i)
 	{
-		YGLambertPoint sample = {x[i],y[i],z[i]};
-		YGLambertPoint val ;
+		YGPoint sample = {x[i],y[i],z[i]};
+		YGPoint val ;
 		val = cartesian_to_geographic(sample,LON_MERID_PARIS,a[i],e[i],eps[i]);
 		
 		// printf("X Computed:%.11f - Expected:%.11f\n",val.x,lon[i]);
@@ -139,15 +139,44 @@ void test_algo0012(void)
 void test_algo004(void)
 {
 
-	YGLambertPoint org = {1029705.083,272723.849,0};
-	YGLambertPoint dest = {0,0,0};
-	YGLambertPoint expected = {0.145512099,0.872664626};
+	YGPoint org = {1029705.083,272723.849,0};
+	YGPoint dest = {0,0,0};
+	YGPoint expected = {0.145512099,0.872664626};
 
 
 	lambert_to_geographic(&org,&dest, LAMBERT_I, LON_MERID_GREENWICH,E_CLARK_IGN,1e-9);
 	printf("Lat:%.9f - Lon:%.9f - Expected:Lat:%.9f - Lon:%.9f\n",dest.x,dest.y,expected.x,expected.y);
 	CU_ASSERT(fabs(dest.x - expected.x) <= 1e-9);
 	CU_ASSERT(fabs(dest.y - expected.y) <= 1e-9);
+}
+
+
+void testBug2(void)
+{
+	YGPoint org = {668832.5384,6950138.7285,0};
+	YGPoint dest = {0,0,0};
+	YGLambertZone zone= LAMBERT_93;
+
+	lambert_to_wgs84_deg(&org,&dest,zone);
+	printf("Lat:%.9f - Lon:%.9f",dest.y,dest.x);
+
+}
+void testOpenGrid(void)
+{	
+	YGPoint org = {.x=2.424971108, .y=48.844445839,.z=0,.unit=DEGREE};
+   
+    YGTransform tr = rgf93_to_ntf(org);
+    
+    YGPoint t = {tr.tx,tr.ty,tr.tz};
+    YGPoint null= {0,0,0};
+    
+    org = pointToRadian(org);
+    org =  geographic_to_cartesian(org.x,org.y,org.z,A_WGS84,E_WGS84);
+    
+    org =  switch_geodesic_system(org, t, 0, null);
+    org = cartesian_to_geographic(org, LON_MERID_PARIS, A_CLARK_IGN, E_CLARK_IGN, DEFAULT_EPS);
+    
+    org = pointToDegree(org);
 }
 
 int main(int argc, char **argv){
@@ -171,7 +200,9 @@ int main(int argc, char **argv){
         NULL == CU_add_test(pSuite,"Test Algo004",test_algo004)     ||
         NULL == CU_add_test(pSuite,"Test algo0021",test_algo0021)   ||
         NULL == CU_add_test(pSuite,"test_algo009",test_algo009)     ||
-        NULL == CU_add_test(pSuite,"test_algo009",test_lambert_deg)     ||
+        NULL == CU_add_test(pSuite,"test_lambert_deg",test_lambert_deg)     ||
+        NULL == CU_add_test(pSuite,"testBug2",testBug2)     ||
+        NULL == CU_add_test(pSuite,"testNTFRGF93",testOpenGrid)     ||
         NULL == CU_add_test(pSuite, "Test lambert", test_lambert)
       ) 
    {

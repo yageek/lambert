@@ -1,1 +1,2 @@
 #cmakedefine DEBUG
+const char * const resource_file_path = "@RESOURCES_PATH@";
