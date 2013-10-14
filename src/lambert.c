@@ -167,7 +167,7 @@ void lambert_to_wgs84(const YGPoint * org, YGPoint *dest,YGLambertZone zone){
   
     if(LAMBERT_93 == zone)
     {
-        lambert_to_geographic(org,dest,zone,3*M_PI/180,E_WGS84,DEFAULT_EPS);
+        lambert_to_geographic(org,dest,zone,LON_MERID_IERS,E_WGS84,DEFAULT_EPS);
     }
     else
     {
