@@ -213,5 +213,5 @@ YGPoint YGPointConvertRGF93_NTF(YGPoint point)
 
 YGPoint YGPointConvertNTF_RGF93(YGPoint point)
 {
-    
+    return (YGPoint){0,0,0,0};
 }

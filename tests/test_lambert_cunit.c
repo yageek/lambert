@@ -172,7 +172,7 @@ void testOpenGrid(void)
     printf("Point value :\n");
 }
 
-void test_RGF93_NTF(void)
+void test_RGF93_NTF_degree(void)
 {
     YGPoint org =  YGDegreePoint(2.424971108, 48.844445839,0);
     YGPoint expected = YGDegreePoint(2.42567186, 48.84451225, 0);
@@ -181,6 +181,22 @@ void test_RGF93_NTF(void)
     YGPoint dest = YGPointConvertRGF93_NTF(org);
     CU_ASSERT(fabs(expected.x - dest.x) <= 1e-8);
     CU_ASSERT(fabs(expected.y - dest.y) <= 1e-8);
+}
+
+void test_RGF93_NTF_degree_to_cartesian(void)
+{
+    YGPoint org =  YGDegreePoint(2.424971108, 48.844445839,0);
+    YGPoint expected = YGDegreePoint(606491.571, 127112.233, 0);
+    
+    
+    YGPoint dest = YGPointConvertRGF93_NTF(org);
+    dest = YGPointToRadian(dest);
+    
+    dest = __YGGeographicToCartesian(dest.x, dest.y, dest.z, A_CLARK_IGN, E_CLARK_IGN);
+
+    
+    CU_ASSERT(fabs(expected.x - dest.x) <= 1e-3);
+    CU_ASSERT(fabs(expected.y - dest.y) <= 1e-3);
 }
 
 int main(int argc, char **argv){
@@ -206,7 +222,8 @@ int main(int argc, char **argv){
         NULL == CU_add_test(pSuite,"test_algo009",test_algo009)     ||
         NULL == CU_add_test(pSuite,"testBug2",testBug2)             ||
         NULL == CU_add_test(pSuite,"testNTFRGF93",testOpenGrid)     ||
-        NULL == CU_add_test(pSuite, "Test  RGF93 ->NTF (Degree)", test_RGF93_NTF)
+        NULL == CU_add_test(pSuite, "Test  (Degree)RGF93 ->NTF (Degree)", test_RGF93_NTF_degree) ||
+        NULL == CU_add_test(pSuite, "Test  (Degree)RGF93 ->NTF (Meter)", test_RGF93_NTF_degree_to_cartesian)
       )
    {
       CU_cleanup_registry();
