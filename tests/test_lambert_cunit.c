@@ -31,22 +31,24 @@ double rounded_down(double val,int n){
 
 void test_lambert_deg(void)
 {
-	YGPoint org = {994300.623,113409.981,0};
-	YGPoint dest = {0,0,0};
+	YGPoint org = YGMeterPoint(994300.623,113409.981,0);
+	YGPoint dest;
 	YGLambertZone zone = LAMBERT_I;
 
-	YGPointConvertWGS84Degree(&org, &dest, zone);
+	dest = YGPointConvertWGS84(org, zone);
+    dest = YGPointToDegree(dest);
+    
 	printf("(Deg)Lon:%.11f - Lat:%.11f - H:%.11f\n",dest.x,dest.y,dest.z);
 }
 
 void test_lambert(void)
 {
 
-	YGPoint org = {999534.581,112186.569,0};
-	YGPoint dest = {0,0,0};
+	YGPoint org = YGMeterPoint(999534.581,112186.569,0);
+	YGPoint dest;
 	YGLambertZone zone = LAMBERT_I;
 
-	YGPointConvertWGS84(&org, &dest, zone);
+	dest = YGPointConvertWGS84(org, zone);
 }
 
 void test_algo009(void)
@@ -144,7 +146,8 @@ void test_algo004(void)
 	YGPoint expected = {0.145512099,0.872664626};
 
 
-	__YGLambertToGeographic(&org,&dest, LAMBERT_I, LON_MERID_GREENWICH,E_CLARK_IGN,1e-9);
+	dest = __YGLambertToGeographic(org, LAMBERT_I, LON_MERID_GREENWICH,E_CLARK_IGN,1e-9);
+    
 	printf("Lat:%.9f - Lon:%.9f - Expected:Lat:%.9f - Lon:%.9f\n",dest.x,dest.y,expected.x,expected.y);
 	CU_ASSERT(fabs(dest.x - expected.x) <= 1e-9);
 	CU_ASSERT(fabs(dest.y - expected.y) <= 1e-9);
@@ -153,11 +156,13 @@ void test_algo004(void)
 
 void testBug2(void)
 {
-	YGPoint org = {668832.5384,6950138.7285,0};
-	YGPoint dest = {0,0,0};
-	YGLambertZone zone= LAMBERT_93;
+	YGPoint org = YGMeterPoint(668832.5384,6950138.7285,0);
+	YGPoint dest;
+	YGLambertZone zone = LAMBERT_93;
 
-	YGPointConvertWGS84Degree(&org,&dest,zone);
+	dest = YGPointConvertWGS84(org,zone);
+    dest = YGPointToDegree(dest);
+    
 	printf("Lat:%.9f - Lon:%.9f",dest.y,dest.x);
 
 }
@@ -170,13 +175,13 @@ void testOpenGrid(void)
     YGPoint t = {tr.tx,tr.ty,tr.tz};
     YGPoint null= {0,0,0};
     
-    org = pointToRadian(org);
+    org = YGPointToRadian(org);
     org =  __YGGeographicToCartesian(org.x,org.y,org.z,A_WGS84,E_WGS84);
     
     org =  __YGSwitchGeodesicSystem(org, t, 0, null);
     org = __YGCartesianToGeographic(org, LON_MERID_PARIS, A_CLARK_IGN, E_CLARK_IGN, DEFAULT_EPS);
     
-    org = pointToDegree(org);
+    org = YGPointToDegree(org);
 }
 
 int main(int argc, char **argv){

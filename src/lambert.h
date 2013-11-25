@@ -18,8 +18,6 @@
 #define ct_x0 700000.0
 #define ct_y0 6600000.0
 
-#define DISPLAY_YGPoint(YGPoint) printf(#YGPoint" X:%f | Y:%f | Z:%f\n",YGPoint.x,YGPoint.y,YGPoint.z);
-#define DISPLAY_YGPoint_REF(YGPoint) printf(#YGPoint" X:%f | Y:%f | Z:%f\n",YGPoint->x,YGPoint->y,YGPoint->z);
 
 typedef enum {
 	LAMBERT_I=0,
@@ -33,7 +31,8 @@ typedef enum {
 typedef enum {
     DEGREE,
     GRAD,
-    RADIAN
+    RADIAN,
+    METER
 } CoordUnit;
 
 typedef struct {
@@ -52,8 +51,17 @@ typedef struct
 
 typedef YGPoint Vector;
 
-YGPoint pointToRadian(YGPoint p);
-YGPoint pointToDegree(YGPoint p);
+#define __YGPointWithUnit(_x,_y,_z,_unit) {.x=_x, .y=_y,.z=_z,.unit=_unit};
+
+#define YGDegreePoint(x,y,z) __YGPointWithUnit(x,y,z,DEGREE)
+#define YGRadianPoint(x,y,z) __YGPointWithUnit(x,y,z,RADIAN)
+#define YGGradPoint(x,y,z) __YGPointWithUnit(x,y,z,GRAD)
+#define YGMeterPoint(x,y,z) __YGPointWithUnit(x,y,z,METER)
+ 
+
+YGPoint YGPointToRadian(YGPoint p);
+YGPoint YGPointToDegree(YGPoint p);
+YGPoint YGPointToGrad(YGPoint p);
 
 /*
  * ALGO0021 - Calcul de la grande Normale 
@@ -65,13 +73,9 @@ double __YGLambertNormal(double lat, double a, double e);
  * Convert a YGPoint struct from one lambert zone to WGS84 (Rad)
  *
  */
-void YGPointConvertWGS84(const YGPoint * org, YGPoint *dest, YGLambertZone zone);
 
-/*
- * Convert a YGPoint struct from one lambert zone to WGS84 (Deg)
- *
- */
-void YGPointConvertWGS84Degree(const YGPoint * org, YGPoint *dest, YGLambertZone zone);
+
+YGPoint YGPointConvertWGS84(YGPoint point, YGLambertZone zone);
 
 /*
  * ALGO0002
@@ -88,7 +92,7 @@ YGPoint __YGCartesianToGeographic(YGPoint org, double meridien, double a, double
 /*
  * ALGO004
  */
-void __YGLambertToGeographic(const YGPoint * org,YGPoint *dest, YGLambertZone zone, double lon_merid, double e, double eps);
+YGPoint __YGLambertToGeographic(YGPoint org, YGLambertZone zone, double lon_merid, double e, double eps);
 
 /**
  * ALGO0009 - Transformations geographiques -> cartésiennes

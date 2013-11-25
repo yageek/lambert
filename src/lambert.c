@@ -7,33 +7,129 @@
 #include <math.h>
 #include <stdio.h>
 
-#define RAD_TO_DEG(x) x*180/M_PI
-
-#define DISPLAY_YGLambertPoint(YGLambertPoint) printf(#YGLambertPoint" X:%f | Y:%f | Z:%f\n",YGLambertPoint.x,YGLambertPoint.y,YGLambertPoint.z);
-#define DISPLAY_YGLambertPoint_REF(YGLambertPoint) printf(#YGLambertPoint" X:%f | Y:%f | Z:%f\n",YGLambertPoint->x,YGLambertPoint->y,YGLambertPoint->z);
 
 static double lambert_n[6] = {0.7604059656, 0.7289686274, 0.6959127966, 0.6712679322, 0.7289686274, 0.7256077650};
 static double lambert_c[6] = {11603796.98, 11745793.39, 11947992.52, 12136281.99, 11745793.39, 11754255.426};
 static double lambert_xs[6]= {600000.0, 600000.0, 600000.0, 234.358, 600000.0, 700000.0};
 static double lambert_ys[6]= {5657616.674, 6199695.768, 6791905.085, 7239161.542, 8199695.768, 12655612.050};
 
-YGPoint pointToDegree(YGPoint p)
+YGPoint __YGDegreeToRadian(YGPoint pt)
 {
-   
-        p.x = p.x * 180/M_PI;
-        p.y = p.y * 180/M_PI;
-        p.z = p.z * 180/M_PI;
+    pt.x = pt.x * M_PI / 180.0;
+    pt.y = pt.y * M_PI / 180.0;
+    pt.z = pt.z * M_PI / 180.0;
     
-        return p;
+    return pt;
 }
 
-YGPoint pointToRadian(YGPoint p)
+YGPoint __YGRadianToDegree(YGPoint pt)
 {
-        p.x = p.x * M_PI/180;
-        p.y = p.y * M_PI/180;
-        p.z = p.z * M_PI/180;
+        pt.x = pt.x * 180/ M_PI;
+        pt.y = pt.y * 180/ M_PI;
+        pt.z = pt.z * 180/ M_PI;
+        
+        return pt;
+}
+
+YGPoint __YGGradToRadian(YGPoint pt)
+{
+        pt.x = pt.x * M_PI/200.0;
+        pt.y = pt.y * M_PI/200.0;
+        pt.z = pt.z * M_PI/200.0;
     
-    return p;
+        return pt;
+}
+YGPoint __YGRadianToGrad(YGPoint pt)
+{
+    pt.x = pt.x * 200.0/M_PI;
+    pt.y = pt.y * 200.0/M_PI;
+    pt.z = pt.z * 200.0/M_PI;
+    
+    return pt;
+}
+
+YGPoint __YGGradToDegree(YGPoint pt)
+{
+    pt.x = pt.x * 180.0/200.0;
+    pt.y = pt.y * 180.0/200.0;
+    pt.z = pt.z * 180.0/200.0;
+    
+    return pt;
+    
+}
+
+YGPoint __YGDegreeToGrad(YGPoint pt)
+{
+    pt.x = pt.x * 200.0/180.0;
+    pt.y = pt.y * 200.0/180.0;
+    pt.z = pt.z * 200.0/180.0;
+    return pt;
+}
+
+
+YGPoint YGPointToDegree(YGPoint pt)
+{
+    
+    switch (pt.unit)
+    {
+        case RADIAN :
+        {
+            pt = __YGRadianToDegree(pt);
+        }
+            break;
+        case GRAD :
+        {
+            pt = __YGGradToDegree(pt);
+        }
+            break;
+       default:
+            break;
+    }
+        
+            return  pt;
+    
+}
+
+YGPoint YGPointToRadian(YGPoint pt)
+{
+    switch (pt.unit)
+    {
+        case DEGREE :
+        {
+            pt = __YGDegreeToRadian(pt);
+        }
+            break;
+        case GRAD :
+        {
+            pt = __YGGradToRadian(pt);
+        }
+            break;
+        default:
+            break;
+    }
+    
+    return  pt;
+}
+
+YGPoint YGPointToGrad(YGPoint pt)
+{
+    switch (pt.unit)
+    {
+        case RADIAN :
+        {
+            pt = __YGRadianToGrad(pt);
+        }
+            break;
+        case DEGREE :
+        {
+            pt = __YGDegreeToGrad(pt);
+        }
+            break;
+        default:
+            break;
+    }
+
+    return  pt;
 }
 
 double __YGLatitudeISOFromLatitude(double lat, double e)
@@ -64,15 +160,15 @@ double __YGLatitudeFromLatitudeISO(double lat_iso, double e,double eps)
 *	ALGO0004 - Lambert vers geographiques
 */
 
-void __YGLambertToGeographic(const YGPoint * org,YGPoint *dest, YGLambertZone zone, double lon_merid, double e, double eps)
+YGPoint __YGLambertToGeographic(YGPoint org, YGLambertZone zone, double lon_merid, double e, double eps)
 {
 	double n = lambert_n[zone];
 	double C = lambert_c[zone];
 	double x_s = lambert_xs[zone];
 	double y_s = lambert_ys[zone];
 
-	double x = org->x;
-	double y = org->y;
+	double x = org.x;
+	double y = org.y;
 
 	double lon, gamma, R, lat_iso;
 
@@ -86,8 +182,10 @@ void __YGLambertToGeographic(const YGPoint * org,YGPoint *dest, YGLambertZone zo
 
 	double lat = __YGLatitudeFromLatitudeISO(lat_iso,e,eps);
 
-	dest->x = lon;
-	dest->y = lat;
+	org.x = lon;
+	org.y = lat;
+    
+    return org;
 }
 
 
@@ -161,39 +259,37 @@ double __YGLambertNormal(double lat, double a, double e)
  *
  */
 
-void YGPointConvertWGS84(const YGPoint * org, YGPoint *dest,YGLambertZone zone){
+YGPoint YGPointConvertWGS84(YGPoint point, YGLambertZone zone){
     
+    if(point.unit != METER)
+    {
+            perror("Could not operate on a non METER based point!\n The points returned will be the same!\n");
+            return  point;
+    }
     
-  
     if(LAMBERT_93 == zone)
     {
-        __YGLambertToGeographic(org,dest,zone,LON_MERID_IERS,E_WGS84,DEFAULT_EPS);
+       point =  __YGLambertToGeographic(point,zone,LON_MERID_IERS,E_WGS84,DEFAULT_EPS);
+    
     }
     else
     {
-        __YGLambertToGeographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
-        YGPoint temp = __YGGeographicToCartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
+        point  = __YGLambertToGeographic(point,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
+        point = __YGGeographicToCartesian(point.x,point.y,point.z,A_CLARK_IGN,E_CLARK_IGN);
     
-        temp.x= temp.x - 168;
-        temp.y= temp.y - 60;
-        temp.z= temp.z + 320;
+        point.x-= 168;
+        point.y-= 60;
+        point.z+= 320;
     
         //WGS84 refers to greenwich
-        temp = __YGCartesianToGeographic(temp, LON_MERID_IERS, A_WGS84,E_WGS84,DEFAULT_EPS);
-        
-        dest->x = temp.x;
-        dest->y = temp.y;
+        point = __YGCartesianToGeographic(point, LON_MERID_IERS, A_WGS84,E_WGS84,DEFAULT_EPS);
     }
+    
+    point.unit = RADIAN;
+    return point;
 }
 
 
-void YGPointConvertWGS84Degree(const YGPoint * org, YGPoint *dest, YGLambertZone zone)
-{
-	YGPoint temp = {0,0,0};
-	
-	YGPointConvertWGS84(org,&temp,zone);
-    *dest = pointToDegree(temp);
-}
 
 double __YGLatitudeISO(double lat, double e)
 {
