@@ -12,6 +12,9 @@
 #define MAX_PATH_SIZE 1024
 #define DELTA_REALLOCATION 10
 
+#ifndef OPEN_MAX
+#define OPEN_MAX 256
+#endif
 
 typedef struct {
     
@@ -152,7 +155,7 @@ void ntvreg_around_point(const YGPoint pt, NTV2Reg *t1, NTV2Reg *t2, NTV2Reg * t
     *t3 = *(--searchReg);
 
 }
-YGTransform __YGTransformTFToRGF93(YGPoint pt)
+YGTransform __YGTransformNTFoRGF93(YGPoint pt)
 {
     if(!gridFD)
         loadGrid();
@@ -173,7 +176,8 @@ YGTransform __YGTransformTFToRGF93(YGPoint pt)
     regToBuff(t3Buf,t3);
     regToBuff(t4Buf,t4);
     
-    for(int i = 0; i< 3; ++i)
+	int i;
+    for(i = 0; i< 3; ++i)
     {
         d[i] =  (1-x)*(1-y)*t1Buf[i] + (1-x)*y*t2Buf[i] + (1-y)*x*t3Buf[i] + x*y*t4Buf[i];
     }
@@ -184,7 +188,7 @@ YGTransform __YGTransformTFToRGF93(YGPoint pt)
 
 YGTransform __YGTransformRGF93ToNTF(YGPoint pt)
 {
-    YGTransform tm = __YGTransformTFToRGF93(pt);
+    YGTransform tm = __YGTransformNTFoRGF93(pt);
     YGTransform val = {-1*tm.tx,-1*tm.ty,-1*tm.tz};
     return val;
 }
