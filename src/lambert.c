@@ -19,6 +19,8 @@ YGPoint __YGDegreeToRadian(YGPoint pt)
     pt.y = pt.y * M_PI / 180.0;
     pt.z = pt.z * M_PI / 180.0;
     
+    pt.unit = RADIAN;
+    
     return pt;
 }
 
@@ -27,7 +29,9 @@ YGPoint __YGRadianToDegree(YGPoint pt)
         pt.x = pt.x * 180/ M_PI;
         pt.y = pt.y * 180/ M_PI;
         pt.z = pt.z * 180/ M_PI;
-        
+    
+        pt.unit = DEGREE;
+    
         return pt;
 }
 
@@ -37,6 +41,8 @@ YGPoint __YGGradToRadian(YGPoint pt)
         pt.y = pt.y * M_PI/200.0;
         pt.z = pt.z * M_PI/200.0;
     
+        pt.unit = RADIAN;
+    
         return pt;
 }
 YGPoint __YGRadianToGrad(YGPoint pt)
@@ -44,6 +50,8 @@ YGPoint __YGRadianToGrad(YGPoint pt)
     pt.x = pt.x * 200.0/M_PI;
     pt.y = pt.y * 200.0/M_PI;
     pt.z = pt.z * 200.0/M_PI;
+    
+    pt.unit = GRAD;
     
     return pt;
 }
@@ -54,6 +62,8 @@ YGPoint __YGGradToDegree(YGPoint pt)
     pt.y = pt.y * 180.0/200.0;
     pt.z = pt.z * 180.0/200.0;
     
+    pt.unit = DEGREE;
+    
     return pt;
     
 }
@@ -63,6 +73,9 @@ YGPoint __YGDegreeToGrad(YGPoint pt)
     pt.x = pt.x * 200.0/180.0;
     pt.y = pt.y * 200.0/180.0;
     pt.z = pt.z * 200.0/180.0;
+    
+    pt.unit = GRAD;
+    
     return pt;
 }
 
@@ -89,6 +102,7 @@ YGPoint YGPointToDegree(YGPoint pt)
             return  pt;
     
 }
+
 
 YGPoint YGPointToRadian(YGPoint pt)
 {
@@ -131,6 +145,27 @@ YGPoint YGPointToGrad(YGPoint pt)
 
     return  pt;
 }
+
+YGPoint YGPointToUnit(YGPoint point, CoordUnit unit)
+{
+    switch (unit) {
+        case DEGREE:
+            return YGPointToDegree(point);
+            break;
+        case GRAD:
+            return YGPointToGrad(point);
+        case RADIAN :
+            return YGPointToDegree(point);
+            break;
+        default:
+            return point;
+            break;
+    }
+}
+
+/*****************
+ ** IGN algorithms
+*****************/
 
 double __YGLatitudeISOFromLatitude(double lat, double e)
 {
@@ -248,7 +283,8 @@ double __YGLambertNormal(double lat, double a, double e)
  	YGPoint pt;
  	pt.x = lon;
  	pt.y = phi_i;
- 	pt.z = he;
+ 	pt.z = he;     
+    pt.unit = RADIAN;
 
  	return pt;
  }

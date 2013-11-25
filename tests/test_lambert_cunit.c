@@ -6,7 +6,6 @@
 #include "../src/lambert.h"
 #include "../src/rgf93.h"
 
-#define DISPLAY_POINT(point) printf(#point" X:%f | Y:%f | Z:%f\n",point.x,point.y,point.z);
 
 int init_suite_success(void) { return 0; }
 int init_suite_failure(void) { return -1; }
@@ -29,28 +28,6 @@ double rounded_down(double val,int n){
 	return floorf(val*p)/p;
 }
 
-void test_lambert_deg(void)
-{
-	YGPoint org = YGMeterPoint(994300.623,113409.981,0);
-	YGPoint dest;
-	YGLambertZone zone = LAMBERT_I;
-
-	dest = YGPointConvertWGS84(org, zone);
-    dest = YGPointToDegree(dest);
-    
-	printf("(Deg)Lon:%.11f - Lat:%.11f - H:%.11f\n",dest.x,dest.y,dest.z);
-}
-
-void test_lambert(void)
-{
-
-	YGPoint org = YGMeterPoint(999534.581,112186.569,0);
-	YGPoint dest;
-	YGLambertZone zone = LAMBERT_I;
-
-	dest = YGPointConvertWGS84(org, zone);
-}
-
 void test_algo009(void)
 {	
 	double lon[3] = {0.01745329248 ,0.00290888212 ,0.00581776423};
@@ -58,13 +35,22 @@ void test_algo009(void)
 	double he[3] = {100.0000,10.0000 ,2000.0000};
 	double a[3] = {6378249.2000 ,6378249.2000 ,6378249.2000};
 	double e[3] = {0.08248325679 ,0.08248325679 ,0.08248325679};
+    
+    YGPoint expected[3] = {
+        {6376064.6955,111294.6230,128984.7250, METER },
+        {6378232.2149,18553.5780,0, METER },
+        {6376897.5369,37099.7050,-202730.9070, METER }
+    };
 
 
 	unsigned int i;
 	for (i =0; i < 3;++i)
 	{
 		YGPoint pt  = __YGGeographicToCartesian(lon[i],lat[i],he[i],a[i],e[i]);
-		DISPLAY_POINT(pt);
+        CU_ASSERT(fabs(pt.x - expected[i].x) <= 1e-4);
+        CU_ASSERT(fabs(pt.y - expected[i].y) <= 1e-4);
+        CU_ASSERT(fabs(pt.z - expected[i].z) <= 1e-4);
+        
 	}
 
 }
@@ -78,7 +64,6 @@ void test_algo0021 (void)
 	double e = 0.081991890;
 
 	double calc = __YGLambertNormal(lat,a,e);
-	printf("Expected:%.4f | Computed:%.4f\n",n,calc);
 	CU_ASSERT(n == truncate(calc,4));
 
 }
@@ -147,8 +132,7 @@ void test_algo004(void)
 
 
 	dest = __YGLambertToGeographic(org, LAMBERT_I, LON_MERID_GREENWICH,E_CLARK_IGN,1e-9);
-    
-	printf("Lat:%.9f - Lon:%.9f - Expected:Lat:%.9f - Lon:%.9f\n",dest.x,dest.y,expected.x,expected.y);
+ 
 	CU_ASSERT(fabs(dest.x - expected.x) <= 1e-9);
 	CU_ASSERT(fabs(dest.y - expected.y) <= 1e-9);
 }
@@ -157,23 +141,25 @@ void test_algo004(void)
 void testBug2(void)
 {
 	YGPoint org = YGMeterPoint(668832.5384,6950138.7285,0);
+    YGPoint expected = YGDegreePoint(2.56865, 49.64961, 0);
 	YGPoint dest;
 	YGLambertZone zone = LAMBERT_93;
 
 	dest = YGPointConvertWGS84(org,zone);
     dest = YGPointToDegree(dest);
     
-	printf("Lat:%.9f - Lon:%.9f",dest.y,dest.x);
+	CU_ASSERT(fabs(dest.x - expected.x) <= 1e-5);
+  	CU_ASSERT(fabs(dest.y - expected.y) <= 1e-5);
 
 }
 void testOpenGrid(void)
 {	
-	YGPoint org = {.x=2.424971108, .y=48.844445839,.z=0,.unit=DEGREE};
-   
-    YGTransform tr = rgf93_to_ntf(org);
+	YGPoint org =  YGDegreePoint(2.424971108, 48.844445839,0);
+    
+    YGTransform tr = __YGTransformRGF93ToNTF(org);
     
     YGPoint t = {tr.tx,tr.ty,tr.tz};
-    YGPoint null= {0,0,0};
+    YGPoint null= {0,0,0,RADIAN};
     
     org = YGPointToRadian(org);
     org =  __YGGeographicToCartesian(org.x,org.y,org.z,A_WGS84,E_WGS84);
@@ -182,6 +168,19 @@ void testOpenGrid(void)
     org = __YGCartesianToGeographic(org, LON_MERID_PARIS, A_CLARK_IGN, E_CLARK_IGN, DEFAULT_EPS);
     
     org = YGPointToDegree(org);
+    
+    printf("Point value :\n");
+}
+
+void test_RGF93_NTF(void)
+{
+    YGPoint org =  YGDegreePoint(2.424971108, 48.844445839,0);
+    YGPoint expected = YGDegreePoint(2.42567186, 48.84451225, 0);
+    
+    
+    YGPoint dest = YGPointConvertRGF93_NTF(org);
+    CU_ASSERT(fabs(expected.x - dest.x) <= 1e-8);
+    CU_ASSERT(fabs(expected.y - dest.y) <= 1e-8);
 }
 
 int main(int argc, char **argv){
@@ -205,11 +204,10 @@ int main(int argc, char **argv){
         NULL == CU_add_test(pSuite,"Test Algo004",test_algo004)     ||
         NULL == CU_add_test(pSuite,"Test algo0021",test_algo0021)   ||
         NULL == CU_add_test(pSuite,"test_algo009",test_algo009)     ||
-        NULL == CU_add_test(pSuite,"test_lambert_deg",test_lambert_deg)     ||
-        NULL == CU_add_test(pSuite,"testBug2",testBug2)     ||
+        NULL == CU_add_test(pSuite,"testBug2",testBug2)             ||
         NULL == CU_add_test(pSuite,"testNTFRGF93",testOpenGrid)     ||
-        NULL == CU_add_test(pSuite, "Test lambert", test_lambert)
-      ) 
+        NULL == CU_add_test(pSuite, "Test  RGF93 ->NTF (Degree)", test_RGF93_NTF)
+      )
    {
       CU_cleanup_registry();
       return CU_get_error();

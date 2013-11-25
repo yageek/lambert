@@ -25,7 +25,6 @@ typedef struct {
 
 static char currentNTVPath[OPEN_MAX];
 static FILE * gridFD = NULL;
-static char grd3dparams[4][MAX_LINE_BUFFER] = {{0}};
 
 static NTV2Reg *regcache = NULL;
 static int lastRegPos = 0;
@@ -108,21 +107,6 @@ int loadGrid()
     return 0;
 }
 
-
-void printParameters()
-{
-	printf("===== Parameters =====\n");
-	printf("%s\n", grd3dparams[0]);
-	printf("%s\n", grd3dparams[1]);
-	printf("%s\n", grd3dparams[2]);
-	printf("%s\n", grd3dparams[3]);
-    
-}
-
-void printReg(NTV2Reg reg)
-{
-    printf("LON:%f - LAT:%f - TX:%f - TY:%f - TZ:%f - PRE:%f\n",reg.lon,reg.lat,reg.tx,reg.ty,reg.tz,reg.precision);
-}
 void unloadGrid()
 {
     fclose(gridFD);
@@ -168,7 +152,7 @@ void ntvreg_around_point(const YGPoint pt, NTV2Reg *t1, NTV2Reg *t2, NTV2Reg * t
     *t3 = *(--searchReg);
 
 }
-YGTransform ntf_to_rgf93(YGPoint pt)
+YGTransform __YGTransformTFToRGF93(YGPoint pt)
 {
     if(!gridFD)
         loadGrid();
@@ -198,9 +182,36 @@ YGTransform ntf_to_rgf93(YGPoint pt)
     return tm;
 }
 
-YGTransform rgf93_to_ntf(YGPoint pt)
+YGTransform __YGTransformRGF93ToNTF(YGPoint pt)
 {
-    YGTransform tm = ntf_to_rgf93(pt);
+    YGTransform tm = __YGTransformTFToRGF93(pt);
     YGTransform val = {-1*tm.tx,-1*tm.ty,-1*tm.tz};
     return val;
+}
+
+
+YGPoint YGPointConvertRGF93_NTF(YGPoint point)
+{
+    CoordUnit oldUnit = point.unit;
+    
+    YGTransform tr = __YGTransformRGF93ToNTF(point);
+    
+    YGPoint t = {tr.tx,tr.ty,tr.tz};
+    YGPoint null= {0,0,0};
+    
+    point = YGPointToRadian(point);
+    point =  __YGGeographicToCartesian(point.x,point.y,point.z,A_WGS84,E_WGS84);
+    
+    point =  __YGSwitchGeodesicSystem(point, t, 0, null);
+    point = __YGCartesianToGeographic(point, LON_MERID_PARIS, A_CLARK_IGN, E_CLARK_IGN, DEFAULT_EPS);
+    
+    point = YGPointToUnit(point, oldUnit);
+    
+    return point;
+
+}
+
+YGPoint YGPointConvertNTF_RGF93(YGPoint point)
+{
+    
 }

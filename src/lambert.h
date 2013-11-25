@@ -62,6 +62,7 @@ typedef YGPoint Vector;
 YGPoint YGPointToRadian(YGPoint p);
 YGPoint YGPointToDegree(YGPoint p);
 YGPoint YGPointToGrad(YGPoint p);
+YGPoint YGPointToUnit(YGPoint point, CoordUnit unit);
 
 /*
  * ALGO0021 - Calcul de la grande Normale 
