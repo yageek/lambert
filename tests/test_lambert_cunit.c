@@ -35,7 +35,7 @@ void test_lambert_deg(void)
 	YGPoint dest = {0,0,0};
 	YGLambertZone zone = LAMBERT_I;
 
-	lambert_to_wgs84_deg(&org, &dest, zone);
+	YGPointConvertWGS84Degree(&org, &dest, zone);
 	printf("(Deg)Lon:%.11f - Lat:%.11f - H:%.11f\n",dest.x,dest.y,dest.z);
 }
 
@@ -46,7 +46,7 @@ void test_lambert(void)
 	YGPoint dest = {0,0,0};
 	YGLambertZone zone = LAMBERT_I;
 
-	lambert_to_wgs84(&org, &dest, zone);
+	YGPointConvertWGS84(&org, &dest, zone);
 }
 
 void test_algo009(void)
@@ -61,7 +61,7 @@ void test_algo009(void)
 	unsigned int i;
 	for (i =0; i < 3;++i)
 	{
-		YGPoint pt  = geographic_to_cartesian(lon[i],lat[i],he[i],a[i],e[i]);
+		YGPoint pt  = __YGGeographicToCartesian(lon[i],lat[i],he[i],a[i],e[i]);
 		DISPLAY_POINT(pt);
 	}
 
@@ -75,7 +75,7 @@ void test_algo0021 (void)
 	double a = 6378388.0000;
 	double e = 0.081991890;
 
-	double calc = lambert_normal(lat,a,e);
+	double calc = __YGLambertNormal(lat,a,e);
 	printf("Expected:%.4f | Computed:%.4f\n",n,calc);
 	CU_ASSERT(n == truncate(calc,4));
 
@@ -97,7 +97,7 @@ void test_algo0002(void)
 
 		for(index = 0;index < 3;index++)
 		{
-			double result = lat_from_lat_iso(lat_iso[index], e[index], eps[index]);
+			double result = __YGLatitudeFromLatitudeISO(lat_iso[index], e[index], eps[index]);
 			result = truncate(result,11);
 			CU_ASSERT(result == phi[index]);
 		}
@@ -124,7 +124,7 @@ void test_algo0012(void)
 	{
 		YGPoint sample = {x[i],y[i],z[i]};
 		YGPoint val ;
-		val = cartesian_to_geographic(sample,LON_MERID_PARIS,a[i],e[i],eps[i]);
+		val = __YGCartesianToGeographic(sample,LON_MERID_PARIS,a[i],e[i],eps[i]);
 		
 		// printf("X Computed:%.11f - Expected:%.11f\n",val.x,lon[i]);
 		CU_ASSERT(fabs(val.x - lon[i]) <= ign_eps);
@@ -144,7 +144,7 @@ void test_algo004(void)
 	YGPoint expected = {0.145512099,0.872664626};
 
 
-	lambert_to_geographic(&org,&dest, LAMBERT_I, LON_MERID_GREENWICH,E_CLARK_IGN,1e-9);
+	__YGLambertToGeographic(&org,&dest, LAMBERT_I, LON_MERID_GREENWICH,E_CLARK_IGN,1e-9);
 	printf("Lat:%.9f - Lon:%.9f - Expected:Lat:%.9f - Lon:%.9f\n",dest.x,dest.y,expected.x,expected.y);
 	CU_ASSERT(fabs(dest.x - expected.x) <= 1e-9);
 	CU_ASSERT(fabs(dest.y - expected.y) <= 1e-9);
@@ -157,7 +157,7 @@ void testBug2(void)
 	YGPoint dest = {0,0,0};
 	YGLambertZone zone= LAMBERT_93;
 
-	lambert_to_wgs84_deg(&org,&dest,zone);
+	YGPointConvertWGS84Degree(&org,&dest,zone);
 	printf("Lat:%.9f - Lon:%.9f",dest.y,dest.x);
 
 }
@@ -171,10 +171,10 @@ void testOpenGrid(void)
     YGPoint null= {0,0,0};
     
     org = pointToRadian(org);
-    org =  geographic_to_cartesian(org.x,org.y,org.z,A_WGS84,E_WGS84);
+    org =  __YGGeographicToCartesian(org.x,org.y,org.z,A_WGS84,E_WGS84);
     
-    org =  switch_geodesic_system(org, t, 0, null);
-    org = cartesian_to_geographic(org, LON_MERID_PARIS, A_CLARK_IGN, E_CLARK_IGN, DEFAULT_EPS);
+    org =  __YGSwitchGeodesicSystem(org, t, 0, null);
+    org = __YGCartesianToGeographic(org, LON_MERID_PARIS, A_CLARK_IGN, E_CLARK_IGN, DEFAULT_EPS);
     
     org = pointToDegree(org);
 }
