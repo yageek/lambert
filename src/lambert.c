@@ -7,36 +7,167 @@
 #include <math.h>
 #include <stdio.h>
 
-#define RAD_TO_DEG(x) x*180/M_PI
-
-#define DISPLAY_YGLambertPoint(YGLambertPoint) printf(#YGLambertPoint" X:%f | Y:%f | Z:%f\n",YGLambertPoint.x,YGLambertPoint.y,YGLambertPoint.z);
-#define DISPLAY_YGLambertPoint_REF(YGLambertPoint) printf(#YGLambertPoint" X:%f | Y:%f | Z:%f\n",YGLambertPoint->x,YGLambertPoint->y,YGLambertPoint->z);
 
 static double lambert_n[6] = {0.7604059656, 0.7289686274, 0.6959127966, 0.6712679322, 0.7289686274, 0.7256077650};
 static double lambert_c[6] = {11603796.98, 11745793.39, 11947992.52, 12136281.99, 11745793.39, 11754255.426};
 static double lambert_xs[6]= {600000.0, 600000.0, 600000.0, 234.358, 600000.0, 700000.0};
 static double lambert_ys[6]= {5657616.674, 6199695.768, 6791905.085, 7239161.542, 8199695.768, 12655612.050};
 
-YGPoint pointToDegree(YGPoint p)
+YGPoint __YGDegreeToRadian(YGPoint pt)
 {
-   
-        p.x = p.x * 180/M_PI;
-        p.y = p.y * 180/M_PI;
-        p.z = p.z * 180/M_PI;
+    pt.x = pt.x * M_PI / 180.0;
+    pt.y = pt.y * M_PI / 180.0;
+    pt.z = pt.z * M_PI / 180.0;
     
-        return p;
+    pt.unit = RADIAN;
+    
+    return pt;
 }
 
-YGPoint pointToRadian(YGPoint p)
+YGPoint __YGRadianToDegree(YGPoint pt)
 {
-        p.x = p.x * M_PI/180;
-        p.y = p.y * M_PI/180;
-        p.z = p.z * M_PI/180;
+        pt.x = pt.x * 180/ M_PI;
+        pt.y = pt.y * 180/ M_PI;
+        pt.z = pt.z * 180/ M_PI;
     
-    return p;
+        pt.unit = DEGREE;
+    
+        return pt;
 }
 
-double latitude_iso_from_lat(double lat, double e)
+YGPoint __YGGradToRadian(YGPoint pt)
+{
+        pt.x = pt.x * M_PI/200.0;
+        pt.y = pt.y * M_PI/200.0;
+        pt.z = pt.z * M_PI/200.0;
+    
+        pt.unit = RADIAN;
+    
+        return pt;
+}
+YGPoint __YGRadianToGrad(YGPoint pt)
+{
+    pt.x = pt.x * 200.0/M_PI;
+    pt.y = pt.y * 200.0/M_PI;
+    pt.z = pt.z * 200.0/M_PI;
+    
+    pt.unit = GRAD;
+    
+    return pt;
+}
+
+YGPoint __YGGradToDegree(YGPoint pt)
+{
+    pt.x = pt.x * 180.0/200.0;
+    pt.y = pt.y * 180.0/200.0;
+    pt.z = pt.z * 180.0/200.0;
+    
+    pt.unit = DEGREE;
+    
+    return pt;
+    
+}
+
+YGPoint __YGDegreeToGrad(YGPoint pt)
+{
+    pt.x = pt.x * 200.0/180.0;
+    pt.y = pt.y * 200.0/180.0;
+    pt.z = pt.z * 200.0/180.0;
+    
+    pt.unit = GRAD;
+    
+    return pt;
+}
+
+
+YGPoint YGPointToDegree(YGPoint pt)
+{
+    
+    switch (pt.unit)
+    {
+        case RADIAN :
+        {
+            pt = __YGRadianToDegree(pt);
+        }
+            break;
+        case GRAD :
+        {
+            pt = __YGGradToDegree(pt);
+        }
+            break;
+       default:
+            break;
+    }
+        
+            return  pt;
+    
+}
+
+
+YGPoint YGPointToRadian(YGPoint pt)
+{
+    switch (pt.unit)
+    {
+        case DEGREE :
+        {
+            pt = __YGDegreeToRadian(pt);
+        }
+            break;
+        case GRAD :
+        {
+            pt = __YGGradToRadian(pt);
+        }
+            break;
+        default:
+            break;
+    }
+    
+    return  pt;
+}
+
+YGPoint YGPointToGrad(YGPoint pt)
+{
+    switch (pt.unit)
+    {
+        case RADIAN :
+        {
+            pt = __YGRadianToGrad(pt);
+        }
+            break;
+        case DEGREE :
+        {
+            pt = __YGDegreeToGrad(pt);
+        }
+            break;
+        default:
+            break;
+    }
+
+    return  pt;
+}
+
+YGPoint YGPointToUnit(YGPoint point, CoordUnit unit)
+{
+    switch (unit) {
+        case DEGREE:
+            return YGPointToDegree(point);
+            break;
+        case GRAD:
+            return YGPointToGrad(point);
+        case RADIAN :
+            return YGPointToDegree(point);
+            break;
+        default:
+            return point;
+            break;
+    }
+}
+
+/*****************
+ ** IGN algorithms
+*****************/
+
+double __YGLatitudeISOFromLatitude(double lat, double e)
 {
     return log(tan(M_PI_4+lat/2)*pow((1-e*sin(lat))/(1+e*sin(lat)),e/2));
 }
@@ -45,7 +176,7 @@ double latitude_iso_from_lat(double lat, double e)
  * ALGO0002
  */
 
-double lat_from_lat_iso(double lat_iso, double e,double eps)
+double __YGLatitudeFromLatitudeISO(double lat_iso, double e,double eps)
 {
 
 	double phi_0 =  2*atan(exp(lat_iso)) - M_PI_2;
@@ -64,15 +195,15 @@ double lat_from_lat_iso(double lat_iso, double e,double eps)
 *	ALGO0004 - Lambert vers geographiques
 */
 
-void lambert_to_geographic(const YGPoint * org,YGPoint *dest, YGLambertZone zone, double lon_merid, double e, double eps)
+YGPoint __YGLambertToGeographic(YGPoint org, YGLambertZone zone, double lon_merid, double e, double eps)
 {
 	double n = lambert_n[zone];
 	double C = lambert_c[zone];
 	double x_s = lambert_xs[zone];
 	double y_s = lambert_ys[zone];
 
-	double x = org->x;
-	double y = org->y;
+	double x = org.x;
+	double y = org.y;
 
 	double lon, gamma, R, lat_iso;
 
@@ -84,10 +215,12 @@ void lambert_to_geographic(const YGPoint * org,YGPoint *dest, YGLambertZone zone
 
 	lat_iso = -1/n*log(fabs(R/C));
 
-	double lat = lat_from_lat_iso(lat_iso,e,eps);
+	double lat = __YGLatitudeFromLatitudeISO(lat_iso,e,eps);
 
-	dest->x = lon;
-	dest->y = lat;
+	org.x = lon;
+	org.y = lat;
+    
+    return org;
 }
 
 
@@ -96,7 +229,7 @@ void lambert_to_geographic(const YGPoint * org,YGPoint *dest, YGLambertZone zone
  *
 */
 
-double lambert_normal(double lat, double a, double e)
+double __YGLambertNormal(double lat, double a, double e)
 {
 
 	return a/sqrt(1-e*e*sin(lat)*sin(lat));
@@ -108,9 +241,9 @@ double lambert_normal(double lat, double a, double e)
  *
  */
 
- YGPoint geographic_to_cartesian(double lon, double lat, double he, double a, double e)
+ YGPoint __YGGeographicToCartesian(double lon, double lat, double he, double a, double e)
  {
- 	double N = lambert_normal(lat,a,e);
+ 	double N = __YGLambertNormal(lat,a,e);
  	
  	YGPoint pt = {0,0,0};
  	pt.x = (N+he)*cos(lat)*cos(lon);
@@ -127,7 +260,7 @@ double lambert_normal(double lat, double a, double e)
  * ALGO0012 - Passage des coordonnées cartésiennes aux coordonnées géographiques
  */
 
- YGPoint cartesian_to_geographic(YGPoint org, double meridien, double a, double e , double eps)
+ YGPoint __YGCartesianToGeographic(YGPoint org, double meridien, double a, double e , double eps)
  {
  	double x = org.x, y = org.y, z = org.z;
 
@@ -150,7 +283,8 @@ double lambert_normal(double lat, double a, double e)
  	YGPoint pt;
  	pt.x = lon;
  	pt.y = phi_i;
- 	pt.z = he;
+ 	pt.z = he;     
+    pt.unit = RADIAN;
 
  	return pt;
  }
@@ -161,50 +295,48 @@ double lambert_normal(double lat, double a, double e)
  *
  */
 
-void lambert_to_wgs84(const YGPoint * org, YGPoint *dest,YGLambertZone zone){
+YGPoint YGPointConvertWGS84(YGPoint point, YGLambertZone zone){
     
+    if(point.unit != METER)
+    {
+            perror("Could not operate on a non METER based point!\n The points returned will be the same!\n");
+            return  point;
+    }
     
-  
     if(LAMBERT_93 == zone)
     {
-        lambert_to_geographic(org,dest,zone,LON_MERID_IERS,E_WGS84,DEFAULT_EPS);
+       point =  __YGLambertToGeographic(point,zone,LON_MERID_IERS,E_WGS84,DEFAULT_EPS);
+    
     }
     else
     {
-        lambert_to_geographic(org,dest,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
-        YGPoint temp = geographic_to_cartesian(dest->x,dest->y,dest->z,A_CLARK_IGN,E_CLARK_IGN);
+        point  = __YGLambertToGeographic(point,zone,LON_MERID_PARIS,E_CLARK_IGN,DEFAULT_EPS);
+        point = __YGGeographicToCartesian(point.x,point.y,point.z,A_CLARK_IGN,E_CLARK_IGN);
     
-        temp.x= temp.x - 168;
-        temp.y= temp.y - 60;
-        temp.z= temp.z + 320;
+        point.x-= 168;
+        point.y-= 60;
+        point.z+= 320;
     
         //WGS84 refers to greenwich
-        temp = cartesian_to_geographic(temp, LON_MERID_IERS, A_WGS84,E_WGS84,DEFAULT_EPS);
-        
-        dest->x = temp.x;
-        dest->y = temp.y;
+        point = __YGCartesianToGeographic(point, LON_MERID_IERS, A_WGS84,E_WGS84,DEFAULT_EPS);
     }
+    
+    point.unit = RADIAN;
+    return point;
 }
 
 
-void lambert_to_wgs84_deg(const YGPoint * org, YGPoint *dest, YGLambertZone zone)
-{
-	YGPoint temp = {0,0,0};
-	
-	lambert_to_wgs84(org,&temp,zone);
-    *dest = pointToDegree(temp);
-}
 
-double lat_iso(double lat, double e)
+double __YGLatitudeISO(double lat, double e)
 {
 	return log(tan(M_PI_4 + lat/2)*pow((1-e*sin(lat))/(1+e*sin(lat)),e/2));
 }
 
-YGPoint coord_transform(double e, double n, double c, double lambda_c, double x_s, double y_s , double lon, double lat)
+YGPoint __YGCoordinatesTransform(double e, double n, double c, double lambda_c, double x_s, double y_s , double lon, double lat)
 {
 	YGPoint dest = {0,0,0};
 
-	double latiso = lat_iso(lat,e);
+	double latiso = __YGLatitudeISO(lat,e);
 	dest.x = x_s + e*exp(-n*latiso)*sin(n*(lon-lambda_c));
 	dest.y = y_s + e*exp(n*latiso)*cos(n*(lon-lambda_c));
 
@@ -212,7 +344,7 @@ YGPoint coord_transform(double e, double n, double c, double lambda_c, double x_
 
 }
 
-YGPoint switch_geodesic_system(YGPoint u, Vector t, double d, Vector r)
+YGPoint __YGSwitchGeodesicSystem(YGPoint u, Vector t, double d, Vector r)
 {
 	YGPoint v = {0,0,0};
 

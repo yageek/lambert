@@ -18,8 +18,6 @@
 #define ct_x0 700000.0
 #define ct_y0 6600000.0
 
-#define DISPLAY_YGPoint(YGPoint) printf(#YGPoint" X:%f | Y:%f | Z:%f\n",YGPoint.x,YGPoint.y,YGPoint.z);
-#define DISPLAY_YGPoint_REF(YGPoint) printf(#YGPoint" X:%f | Y:%f | Z:%f\n",YGPoint->x,YGPoint->y,YGPoint->z);
 
 typedef enum {
 	LAMBERT_I=0,
@@ -33,7 +31,8 @@ typedef enum {
 typedef enum {
     DEGREE,
     GRAD,
-    RADIAN
+    RADIAN,
+    METER
 } CoordUnit;
 
 typedef struct {
@@ -52,43 +51,49 @@ typedef struct
 
 typedef YGPoint Vector;
 
-YGPoint pointToRadian(YGPoint p);
-YGPoint pointToDegree(YGPoint p);
+#define __YGPointWithUnit(_x,_y,_z,_unit) {.x=_x, .y=_y,.z=_z,.unit=_unit};
+
+#define YGDegreePoint(x,y,z) __YGPointWithUnit(x,y,z,DEGREE)
+#define YGRadianPoint(x,y,z) __YGPointWithUnit(x,y,z,RADIAN)
+#define YGGradPoint(x,y,z) __YGPointWithUnit(x,y,z,GRAD)
+#define YGMeterPoint(x,y,z) __YGPointWithUnit(x,y,z,METER)
+ 
+
+YGPoint YGPointToRadian(YGPoint p);
+YGPoint YGPointToDegree(YGPoint p);
+YGPoint YGPointToGrad(YGPoint p);
+YGPoint YGPointToUnit(YGPoint point, CoordUnit unit);
 
 /*
  * ALGO0021 - Calcul de la grande Normale 
  *
 */
-double lambert_normal(double lat, double a, double e);
+double __YGLambertNormal(double lat, double a, double e);
 
 /*
  * Convert a YGPoint struct from one lambert zone to WGS84 (Rad)
  *
  */
-void lambert_to_wgs84(const YGPoint * org, YGPoint *dest, YGLambertZone zone);
 
-/*
- * Convert a YGPoint struct from one lambert zone to WGS84 (Deg)
- *
- */
-void lambert_to_wgs84_deg(const YGPoint * org, YGPoint *dest, YGLambertZone zone);
+
+YGPoint YGPointConvertWGS84(YGPoint point, YGLambertZone zone);
 
 /*
  * ALGO0002
  */
 
-double lat_from_lat_iso(double lat_iso, double e, double eps);
+double __YGLatitudeFromLatitudeISO(double lat_iso, double e, double eps);
 
 /*
 * ALGO0012
 */
 
-YGPoint cartesian_to_geographic(YGPoint org, double meridien, double a, double e , double eps);
+YGPoint __YGCartesianToGeographic(YGPoint org, double meridien, double a, double e , double eps);
 
 /*
  * ALGO004
  */
-void lambert_to_geographic(const YGPoint * org,YGPoint *dest, YGLambertZone zone, double lon_merid, double e, double eps);
+YGPoint __YGLambertToGeographic(YGPoint org, YGLambertZone zone, double lon_merid, double e, double eps);
 
 /**
  * ALGO0009 - Transformations geographiques -> cartésiennes
@@ -96,26 +101,26 @@ void lambert_to_geographic(const YGPoint * org,YGPoint *dest, YGLambertZone zone
  *
  */
 
- YGPoint geographic_to_cartesian(double lon, double lat, double he, double a, double e);
+ YGPoint __YGGeographicToCartesian(double lon, double lat, double he, double a, double e);
 
  /**
  * ALGO13 Transformation de Coordonnées à 7 paramètres entre deux systèmes géodésiques
  */
  
- YGPoint switch_geodesic_system(YGPoint u, Vector t, double d, Vector r);
+ YGPoint __YGSwitchGeodesicSystem(YGPoint u, Vector t, double d, Vector r);
  
  /**
  * Algo0001  Calcul de la latitude isomérique
  */
-double lat_iso(double lat, double e);
+double __YGLatitudeISO(double lat, double e);
 
 /** 
 * Algo003 
 */
-YGPoint coord_transform(double e, double n, double c, double lambda_c, double x_s, double y_s , double lon, double lat);
+YGPoint __YGCoordinatesTransform(double e, double n, double c, double lambda_c, double x_s, double y_s , double lon, double lat);
 
 /**
  * Algo 01
  */
-double latitude_iso_from_lat(double lat, double e);
+double __YGLatitudeISOFromLatitude(double lat, double e);
  #endif
