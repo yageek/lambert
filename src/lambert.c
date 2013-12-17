@@ -355,3 +355,21 @@ YGPoint __YGSwitchGeodesicSystem(YGPoint u, Vector t, double d, Vector r)
 	return v;
 
 }
+
+YGLambertParameters __YGParametersTangent(double a, double e, double lambda_0, double phi_0, double k_0, double x_0, double y_0)
+{
+    YGLambertParameters params;
+
+    double N =__YGLambertNormal(phi_0, a, e);
+    double cot =(1.0/tan(phi_0));
+    
+    params.lambda_c = lambda_0;
+    params.n = sin(phi_0);
+
+    params.c = k_0*N*cot*exp(params.n*__YGLatitudeISOFromLatitude(phi_0, e));
+    params.e = e;
+    params.x_s = x_0;
+    params.y_s = y_0 + k_0*N*cot;
+    
+    return params;
+}

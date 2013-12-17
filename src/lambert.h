@@ -49,6 +49,15 @@ typedef struct
     double tz;
 } YGTransform;
 
+typedef struct
+{
+    double e;
+    double n;
+    double c;
+    double lambda_c;
+    double x_s;
+    double y_s;
+} YGLambertParameters;
 typedef YGPoint Vector;
 
 #define __YGPointWithUnit(_x,_y,_z,_unit) {.x=_x, .y=_y,.z=_z,.unit=_unit};
@@ -123,4 +132,11 @@ YGPoint __YGCoordinatesTransform(double e, double n, double c, double lambda_c, 
  * Algo 01
  */
 double __YGLatitudeISOFromLatitude(double lat, double e);
+
+/**
+ * Algo 19
+ */
+
+YGLambertParameters __YGParametersTangent(double a, double e, double lambda_0, double phi_0, double k_0, double x_0, double y_0);
+
  #endif

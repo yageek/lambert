@@ -137,7 +137,33 @@ void test_algo004(void)
 	CU_ASSERT(fabs(dest.y - expected.y) <= 1e-9);
 }
 
+void testProjectiontangente(void)
+{
+    YGLambertParameters expected1    = {.lambda_c=0.18112808800,.e=0.081991890, .n=0.8290375725, .c=11464828.2192,.x_s=0,.y_s=4312250.9718};
+    
+    YGLambertParameters expected2    = {.lambda_c=0.04079234433,.e=0.0824832568, .n=0.7604059658, .c=11603796.9760,.x_s=600000,.y_s= 5657616.6712};
+    
+    YGLambertParameters o1 = __YGParametersTangent(6378388, 0.081991890, 0.18112808800, 0.97738438100, 1, 0, 0);
+    YGLambertParameters o2 = __YGParametersTangent(6378249.2000, 0.0824832568, 0.04079234433, 0.86393798000, 0.9998773400, 600000, 200000);
+    
+    CU_ASSERT(fabs(o1.lambda_c - expected1.lambda_c) <= 1e-5);
+    CU_ASSERT(fabs(o1.e - expected1.e) <= 1e-5);
+    CU_ASSERT(fabs(o1.n - expected1.n) <= 1e-5);
+    CU_ASSERT(fabs(o1.c - expected1.c) <= 1e-5);
+    CU_ASSERT(fabs(o1.x_s - expected1.x_s) <= 1e-5);
+    CU_ASSERT(fabs(o1.y_s - expected1.y_s) <= 1e-4);
+    
+    CU_ASSERT(fabs(o2.lambda_c - expected2.lambda_c) <= 1e-5);
+    CU_ASSERT(fabs(o2.e - expected2.e) <= 1e-5);
+    CU_ASSERT(fabs(o2.n - expected2.n) <= 1e-5);
+    CU_ASSERT(fabs(o2.c - expected2.c) <= 1e-5);
+    CU_ASSERT(fabs(o2.x_s - expected2.x_s) <= 1e-5);
+    CU_ASSERT(fabs(o2.y_s - expected2.y_s) <= 1e-4);
 
+    
+    
+    
+}
 void testBug2(void)
 {
 	YGPoint org = YGMeterPoint(668832.5384,6950138.7285,0);
@@ -192,7 +218,6 @@ void test_RGF93_NTF_degree_to_cartesian(void)
     YGPoint dest = YGPointConvertRGF93_NTF(org);
     dest = YGPointToRadian(dest);
     
-    dest = __YGGeographicToCartesian(dest.x, dest.y, dest.z, A_CLARK_IGN, E_CLARK_IGN);
 
     
     CU_ASSERT(fabs(expected.x - dest.x) <= 1e-3);
@@ -220,6 +245,7 @@ int main(int argc, char **argv){
         NULL == CU_add_test(pSuite,"Test Algo004",test_algo004)     ||
         NULL == CU_add_test(pSuite,"Test algo0021",test_algo0021)   ||
         NULL == CU_add_test(pSuite,"test_algo009",test_algo009)     ||
+        NULL == CU_add_test(pSuite,"Projections tangante",testProjectiontangente)     ||
         NULL == CU_add_test(pSuite,"testBug2",testBug2)             ||
         NULL == CU_add_test(pSuite,"testNTFRGF93",testOpenGrid)     ||
         NULL == CU_add_test(pSuite, "Test  (Degree)RGF93 ->NTF (Degree)", test_RGF93_NTF_degree) ||
