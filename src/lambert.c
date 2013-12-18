@@ -373,3 +373,32 @@ YGLambertParameters __YGParametersTangent(double a, double e, double lambda_0, d
     
     return params;
 }
+YGLambertParameters __YGParametersSecant(double a, double e, double lambda_0, double phi_0, double phi_1 , double phi_2, double k_0, double x_0, double y_0)
+{
+    YGLambertParameters params;
+    
+    params.lambda_c = lambda_0;
+    
+    double N_phi_1 = __YGLambertNormal(phi_1, a, e);
+    double N_phi_2 = __YGLambertNormal(phi_2, a, e);
+    
+    double L_phi_1 = __YGLatitudeISO(phi_1, e);
+    double L_phi_2 = __YGLatitudeISO(phi_2, e);
+    
+    params.n = log(N_phi_2 *cos(phi_2)/N_phi_1/cos(phi_1))/(L_phi_1 - L_phi_2);
+
+    params.c = N_phi_1*cos(phi_1)/params.n*exp(params.n*L_phi_1);
+    
+     params.x_s = x_0;
+    
+    if(fabs(phi_0 - M_2_PI) <= 1e-9)
+    {
+        params.y_s = y_0;
+    }
+    else
+    {
+        params.y_s = y_0 + params.c*exp(params.n*__YGLatitudeISO(phi_0, e));
+    }
+    
+    return params;
+}

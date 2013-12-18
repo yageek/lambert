@@ -139,4 +139,9 @@ double __YGLatitudeISOFromLatitude(double lat, double e);
 
 YGLambertParameters __YGParametersTangent(double a, double e, double lambda_0, double phi_0, double k_0, double x_0, double y_0);
 
+/**
+ * Algo 54 
+ */
+YGLambertParameters __YGParametersSecant(double a, double e, double lambda_0, double phi_0, double phi_1 , double phi_2, double k_0, double x_0, double y_0);
+
  #endif
