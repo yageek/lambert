@@ -318,7 +318,7 @@ YGPoint YGPointConvertWGS84(YGPoint point, YGLambertZone zone){
         point.z+= 320;
     
         //WGS84 refers to greenwich
-        point = __YGCartesianToGeographic(point, LON_MERID_IERS, A_WGS84,E_WGS84,DEFAULT_EPS);
+        point = __YGCartesianToGeographic(point, LON_MERID_GREENWICH, A_WGS84,E_WGS84,DEFAULT_EPS);
     }
     
     point.unit = RADIAN;
