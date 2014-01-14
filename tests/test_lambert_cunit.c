@@ -164,7 +164,7 @@ void testProjectiontangente(void)
     
     
 }
-void testBug2(void)
+void testBugLambert93(void)
 {
 	YGPoint org = YGMeterPoint(668832.5384,6950138.7285,0);
     YGPoint expected = YGDegreePoint(2.56865, 49.64961, 0);
@@ -177,6 +177,34 @@ void testBug2(void)
 	CU_ASSERT(fabs(dest.x - expected.x) <= 1e-5);
   	CU_ASSERT(fabs(dest.y - expected.y) <= 1e-5);
 
+}
+
+
+void testZenithStrasbourg(void)
+{
+    YGPoint org = YGMeterPoint(994300.623,113409.981,0);
+    YGPoint expected = YGDegreePoint(7.68639475277068, 48.5953456709144, 0);
+	YGPoint dest;
+	YGLambertZone zone = LAMBERT_I;
+    
+	dest = YGPointConvertWGS84(org,zone);
+    dest = YGPointToDegree(dest);
+    
+	CU_ASSERT(fabs(dest.x - expected.x) <= 1e-5);
+  	CU_ASSERT(fabs(dest.y - expected.y) <= 1e-5);
+}
+void testBugLambertIIE(void)
+{
+    YGPoint org = YGMeterPoint(369419,1986498,0);
+    YGPoint expected = YGDegreePoint( -0.579117201473994,44.84071560809383, 0);
+	YGPoint dest;
+	YGLambertZone zone = LAMBERT_II_E;
+    
+	dest = YGPointConvertWGS84(org,zone);
+    dest = YGPointToDegree(dest);
+    
+	CU_ASSERT(fabs(dest.x - expected.x) <= 1e-4);
+  	CU_ASSERT(fabs(dest.y - expected.y) <= 1e-4);
 }
 void testOpenGrid(void)
 {	
@@ -239,14 +267,15 @@ int main(int argc, char **argv){
       return CU_get_error();
    }
 
-   /* add the tests to the suite */
+   /* add the tests to the suite testProjectionsecant*/
    if ( NULL == CU_add_test(pSuite, "Test Algo0002", test_algo0002) ||
         NULL == CU_add_test(pSuite, "Test Algo0012", test_algo0012) ||
         NULL == CU_add_test(pSuite,"Test Algo004",test_algo004)     ||
         NULL == CU_add_test(pSuite,"Test algo0021",test_algo0021)   ||
         NULL == CU_add_test(pSuite,"test_algo009",test_algo009)     ||
-        NULL == CU_add_test(pSuite,"Projections tangante",testProjectiontangente)     ||
-        NULL == CU_add_test(pSuite,"testBug2",testBug2)             ||
+       NULL == CU_add_test(pSuite,"Test Zenith Strasbourg",testZenithStrasbourg)             ||
+        NULL == CU_add_test(pSuite,"Test Bug Lambert 93",testBugLambert93)             ||
+       NULL == CU_add_test(pSuite,"Test Bug Lambert II E",testBugLambertIIE)             ||
         NULL == CU_add_test(pSuite,"testNTFRGF93",testOpenGrid)     ||
         NULL == CU_add_test(pSuite, "Test  (Degree)RGF93 ->NTF (Degree)", test_RGF93_NTF_degree) ||
         NULL == CU_add_test(pSuite, "Test  (Degree)RGF93 ->NTF (Meter)", test_RGF93_NTF_degree_to_cartesian)

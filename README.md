@@ -15,6 +15,10 @@ Inside the source folders :
 	cmake ..
 	make install
 
+## Bintray
+
+ See https://bintray.com/yageek/deb/liblambert
+
 # Usage
 
 ```c
