@@ -1,3 +1,4 @@
+=======
 #Description
 A simple C library to convert Lambert Coordinates to GPS WGS84 coordinates based on the [IGN alorithms and methods](http://geodesie.ign.fr/contenu/fichiers/documentation/algorithmes/notice/NTG_71.pdf)
 
@@ -34,6 +35,18 @@ point = YGPointToDegree(point);
 printf("Lat:%.9f - Lon:%.9f",point.y,point.x);
 ```
 
+#Changelog
+#### 2.0.1
+* Fix bug when tranforming coordinates from cartesian to geographic in non Lambert93.
+
+#### 2.0.0
+* Change API name
+
+#### 1.0.1
+* Fix bug in Lambert93 case
+
+#### 1.0.0
+* First release
+
 #License
 Copyright (c) 2013 Yannick Heinrich - Released under the GPLv2 License.
-
