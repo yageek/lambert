@@ -47,6 +47,3 @@ printf("Lat:%.9f - Lon:%.9f",point.y,point.x);
 
 #### 1.0.0
 * First release.
-
-#License
-Copyright (c) 2013 Yannick Heinrich - Released under the GPLv2 License.
