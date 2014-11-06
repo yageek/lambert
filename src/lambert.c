@@ -4,14 +4,36 @@
 */
 
 #include "lambert.h"
-#include <math.h>
-#include <stdio.h>
+
+#include <malloc.h>
 
 
 static double lambert_n[6] = {0.7604059656, 0.7289686274, 0.6959127966, 0.6712679322, 0.7289686274, 0.7256077650};
 static double lambert_c[6] = {11603796.98, 11745793.39, 11947992.52, 12136281.99, 11745793.39, 11754255.426};
 static double lambert_xs[6]= {600000.0, 600000.0, 600000.0, 234.358, 600000.0, 700000.0};
 static double lambert_ys[6]= {5657616.674, 6199695.768, 6791905.085, 7239161.542, 8199695.768, 12655612.050};
+
+static mpfr_rnd_t YGRND = MPFR_RNDN;
+
+YGPoint* YGNewPoint(double x, double y, double z, CoordUnit unit){
+    YGPoint * pt = malloc(sizeof(YGPoint));
+    
+    mpfr_init_set_d(pt->x, x, YGRND);
+    mpfr_init_set_d(pt->y, y, YGRND);
+    mpfr_init_set_d(pt->z, z, YGRND);
+
+    pt->unit = unit;
+    return pt;
+}
+
+void YGClearPoint(YGPoint* pt){
+
+    mpfr_clear(pt->x);
+    mpfr_clear(pt->z);
+    mpfr_clear(pt->z);
+
+    free(pt);
+}
 
 YGPoint __YGDegreeToRadian(YGPoint pt)
 {

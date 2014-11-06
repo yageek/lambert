@@ -1,6 +1,9 @@
 #ifndef __LAMBERT_H
 #define __LAMBERT_H
 
+#include <math.h>
+#include <stdio.h>
+#include <mpfr.h>
 
 #define DEFAULT_EPS 1e-10
 #define E_CLARK_IGN 0.08248325676
@@ -36,9 +39,9 @@ typedef enum {
 } CoordUnit;
 
 typedef struct {
-	double x;
-	double y;
-	double z;
+	mpfr_t x;
+	mpfr_t y;
+	mpfr_t z;
     CoordUnit unit;
 } YGPoint;
 
