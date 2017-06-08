@@ -18,7 +18,7 @@
 #define ct_x0 700000.0
 #define ct_y0 6600000.0
 
-
+extern "C" {
 typedef enum {
 	LAMBERT_I=0,
 	LAMBERT_II=1,
@@ -123,4 +123,5 @@ YGPoint __YGCoordinatesTransform(double e, double n, double c, double lambda_c, 
  * Algo 01
  */
 double __YGLatitudeISOFromLatitude(double lat, double e);
- #endif
+}
+#endif

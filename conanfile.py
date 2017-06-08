@@ -17,18 +17,18 @@ class LambertConan(ConanFile):
         self.run("cd lambert && git checkout 2.0.1")
         # This small hack might be useful to guarantee proper /MT /MD linkage in MSVC
         # if the packaged project doesn't have variables to set it properly
-        tools.replace_in_file("CMakeLists.txt", "PROJECT(lambert)", '''PROJECT(lambert)
+        tools.replace_in_file("lambert/CMakeLists.txt", "PROJECT(lambert)", '''PROJECT(lambert)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()''')
 
     def build(self):
         cmake = CMake(self)
         shared = "-DBUILD_SHARED_LIBS=ON" if self.options.shared else ""
-        self.run('cmake %s %s' % (cmake.command_line, shared))
+        self.run('cmake lambert %s %s' % (cmake.command_line, shared))
         self.run("cmake --build . %s" % cmake.build_config)
 
     def package(self):
-        self.copy("*.h", dst="include", src="src")
+        self.copy("*.h", dst="include", src="lambert/src")
         self.copy("*lambert.lib", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)
