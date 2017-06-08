@@ -1,5 +1,9 @@
 #include <iostream>
-#include "lambert.h"
+
+extern "C"{
+    #include "lambert.h"
+}
+
 
 int main() {
     //Declares origin point and translated point
