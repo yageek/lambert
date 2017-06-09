@@ -1,6 +1,4 @@
 from conans import ConanFile, CMake, tools
-import os
-
 
 class LambertConan(ConanFile):
     name = "lambert"
@@ -11,6 +9,7 @@ class LambertConan(ConanFile):
     options = {"shared": [True, False]}
     default_options = "shared=False"
     generators = "cmake"
+    description = "A simple C library to convert Lambert coordinates to GPS WGS84 coordinates."
 
     def configure(self):
         del self.settings.compiler.libcxx

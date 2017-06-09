@@ -16,9 +16,9 @@ Inside the source folders :
 	cmake ..
 	make install
 
-## Bintray
+## Debian package
 
- See https://bintray.com/yageek/deb/liblambert
+ You can obtain `.deb` from [bintray](https://bintray.com/yageek/deb/liblambert)
 
 # Usage
 
