@@ -12,12 +12,15 @@ class LambertConan(ConanFile):
     default_options = "shared=False"
     generators = "cmake"
 
+    def configure(self):
+        del self.settings.compiler.libcxx
+
     def source(self):
         self.run("git clone https://github.com/yageek/lambert.git")
         self.run("cd lambert && git checkout 2.0.1")
         # This small hack might be useful to guarantee proper /MT /MD linkage in MSVC
         # if the packaged project doesn't have variables to set it properly
-        tools.replace_in_file("lambert/CMakeLists.txt", "PROJECT(lambert)", '''PROJECT(lambert)
+        tools.replace_in_file("lambert/CMakeLists.txt", "project(lambert)", '''project(lambert)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()''')
 
@@ -36,3 +39,5 @@ conan_basic_setup()''')
 
     def package_info(self):
         self.cpp_info.libs = ["lambert"]
+        if self.settings.os == "Linux":
+            self.cpp_info.libs.append("m")
