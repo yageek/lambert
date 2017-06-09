@@ -47,7 +47,7 @@ point = YGPointToDegree(point);
 printf("Lat:%.9f - Lon:%.9f",point.y,point.x);
 ```
 
-#Changelog
+# Changelog
 #### 2.0.1
 * Fix bug when transforming coordinates from cartesian to geographic in non Lambert93.
 
